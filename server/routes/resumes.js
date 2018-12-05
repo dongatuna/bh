@@ -4,7 +4,7 @@ const router = require("express-promise-router")();
 const {validateBody, schemas } = require("../helpers/routeHelpers");
 
 const CVController = require("../controllers/resumes");
-//const checkAuth = require('../middleware/check-auth');
+const checkAuth = require('../middleware/check-auth');
 const multer = require('multer');
 
 const storage = multer.diskStorage({
@@ -48,17 +48,17 @@ const upload = multer({
 //create a post
 //user needs to be authenticated
 
-router.route('/').post(upload.array("CVdocs"), validateBody(schemas.CVSchema), CVController.createCV);
+router.route('/').post(checkAuth, upload.array("CVdocs"), validateBody(schemas.CVSchema), CVController.createCV);
 
 //read a single post
-router.route('/:id').get(CVController.readCVById);
+router.route('/:id').get(checkAuth, CVController.readCVById);
 
 //update a post
 //user needs to be authenticated
-router.route('/:id').patch(validateBody(schemas.CVSchema), CVController.updateCV)
+router.route('/:id').patch(checkAuth, validateBody(schemas.CVSchema), CVController.updateCV)
 
 //delete a post
 //user needs to be authenticated
-router.route('/:id').delete(CVController.deleteCV);
+router.route('/:id').delete(checkAuth, CVController.deleteCV);
 
 module.exports = router;

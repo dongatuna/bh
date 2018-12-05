@@ -2,16 +2,17 @@
 
 <section>
 
-    <div class="container mt-5 col-sm-10 col-md-6 col-lg-4 p-5">
-      <form class="form-signin" v-on:submit.prevent="addUser">
+ 
+    <div class="container mt-5 col-sm-10 col-md-6 col-lg-4 p-5"> 
+      <form class="form-signin" role="form" v-on:submit.prevent="addUser">
         <div class="text-center mb-4">        
         <p>Please provide the following information </p>       
       </div>
 
-      <div class="form-label-group">
+      <!-- <div class="form-label-group">
         <input type="text" class="form-control" placeholder="Preferred Name" name="username" id="username" v-model="user.name" required>
         <label for="name">Preferred Name</label>
-      </div>   
+      </div>    -->
 
        <div class="form-group">
         
@@ -37,7 +38,12 @@
       </form>
            
       <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2018</p>
-    </div>   
+    </div> 
+      
+
+    <!-- form to start here -->
+
+      
   
 </section>
     

@@ -1,7 +1,8 @@
-const express = require("express");
-const router = require("express-promise-router")();
-const {validateBody, schemas } = require("../helpers/routeHelpers");
-const EventController = require("../controllers/events");
+const express = require("express")
+const router = require("express-promise-router")()
+const {validateBody, schemas } = require("../helpers/routeHelpers")
+const EventController = require("../controllers/events")
+const checkAuth = require('../middleware/check_auth')
 
 //const checkAuth = require('../middleware/check-auth');
 const multer = require('multer');
@@ -53,7 +54,7 @@ const upload = multer({
 //create a post
 //user needs to be authenticated
 
-router.route('/').post(upload.array('eventfiles'), validateBody(schemas.eventSchema), EventController.createEvent);
+router.route('/').post(checkAuth, upload.array('eventfiles'), validateBody(schemas.eventSchema), EventController.createEvent);
 
 //validateBody(schemas.eventSchema), 
 //read many event
@@ -63,15 +64,15 @@ router.route('/:id').get(EventController.readEventById);
 
 //read posts by a single user
 //user needs to be authenticated
-router.route('/:id').get(EventController.readUserEvents)
+router.route('/:id').get(checkAuth, EventController.readUserEvents)
 
 //update a post
 //user needs to be authenticated
-router.route('/:id').patch(EventController.updateEvent)
+router.route('/:id').patch(checkAuth, EventController.updateEvent)
 // router.route('/:id').patch(validateBody(schemas.eventSchema), EventController.updateEvent)
 //delete a post
 //user needs to be authenticated
-router.route('/:id').delete(EventController.deleteEvent);
+router.route('/:id').delete(checkAuth, EventController.deleteEvent);
 
 module.exports = router;
 

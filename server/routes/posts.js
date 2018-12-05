@@ -3,7 +3,7 @@ const router = require("express-promise-router")();
 const {validateBody, schemas } = require("../helpers/routeHelpers");
 const PostController = require("../controllers/posts");
 
-//const checkAuth = require('../middleware/check-auth');
+const checkAuth = require('../middleware/check-auth');
 const multer = require('multer');
 
 const storage = multer.diskStorage({
@@ -49,7 +49,7 @@ const upload = multer({
 //create a post
 //user needs to be authenticated
 
-router.route('/').post(upload.array("postImage"), validateBody(schemas.postSchema), PostController.createPost);
+router.route('/').post(checkAuth, upload.array("postImage"), validateBody(schemas.postSchema), PostController.createPost);
 
 //read many posts
 router.route('/').get(PostController.readPosts);
@@ -59,11 +59,11 @@ router.route('/:id').get(PostController.readPostById);
 
 //update a post
 //user needs to be authenticated
-router.route('/:id').patch(validateBody(schemas.postSchema), PostController.updatePost)
+router.route('/:id').patch(checkAuth, validateBody(schemas.postSchema), PostController.updatePost)
 
 //delete a post
 //user needs to be authenticated
-router.route('/:id').delete(PostController.deletePost);
+router.route('/:id').delete(checkAuth, PostController.deletePost);
 
 module.exports = router;
 

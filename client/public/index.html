@@ -16,10 +16,11 @@
   <body>
     
     <script>
-     
+       // import config from '/configuration/index.js'
         window.fbAsyncInit = function() {
           FB.init({
-            appId      : '292243491522685',
+            //"292243491522685"
+            appId      : "292243491522685", //config.facebook.clientID,
             cookie     : true,
             xfbml      : true,
             version    : 'v3.2'
