@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const User = require('../models/user');
-const JWT = require('jsonwebtoken');
+const User = require('../models/user')
+const JWT = require('jsonwebtoken')
+const {JWT_SECRET} = require('../configuration/index')
 
 signToken = (user) =>{
     return JWT.sign(        
@@ -9,12 +9,11 @@ signToken = (user) =>{
             sub: user.id,
             iat: new Date().getTime(), //current time
             exp: new Date().setDate(new Date().getDate()+1), //current time + 1 day ahead
-            email: user.email,
-            userId: user._id
+           // email: user.email,
+            //userId: user._id
         },
-        "Dis here is super sekret"
-   
-    );
+        JWT_SECRET   
+    )
 }
 module.exports = {
 
@@ -49,13 +48,12 @@ module.exports = {
             console.log("The new user is: ",newUser);
             await newUser.save()
 
-            //console log user to see if the password has been encrypted
-            console.log("This is the password of the new user ", newUser.password);
+ 
             //Generate the token
-            const access_token = signToken(newUser.local.password);
+            const token = signToken(newUser);
            // console.log(token);
             //Respond with the token
-            res.status(200).json({access_token});
+            res.status(200).json({token});
             
         }catch(error){
             res.status(401).json({
@@ -68,11 +66,26 @@ module.exports = {
 
     signIn: async(req, res, next)=>{
         //The signin is handled by passport.js - 
-        
-       const token = signToken(req.user);
+       console.log('here is the req.user', req.user)
+       const token = signToken(req.user)
         //console.log(token);
 
-        res.status(200).json({token});
+        res.status(200).json({token})
+    },
+
+    logOut: async(req, res, next)=>{
+        try{
+
+            console.log("THIS IS REQ.USER...", req.user)
+            
+            req.logout()
+
+            const null_token = null
+            res.status(200).json({null_token})
+        }catch(error){
+            console.log("I am NOT here...")
+            res.status(401).json({error})
+        }        
     },
 
     facebookOAuth: async(req, res, next)=>{

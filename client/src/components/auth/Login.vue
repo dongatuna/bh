@@ -3,7 +3,7 @@
 <section>
 
     <div class="container mt-5 col-sm-10 col-md-6 col-lg-4 p-5">
-      <form class="form-signin" v-on:submit.prevent="addUser">
+      <form class="form-signin" v-on:submit.prevent="logInUser">
         <div class="text-center mb-4">        
         <h1 class="h3 mb-3 font-weight-normal">Login</h1>        
       </div>
@@ -18,15 +18,14 @@
         <label for="inputPassword">Password</label>
       </div>    
 
-      <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Sign up</button>
+      <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Log in</button>
 
       </form>
 
       <div class="text-center">
         <h4>Or login using</h4>
       </div>
-      <a href="/auth/google">Facebook</a>
-
+      
       <hr>
       <button class="btn btn-lg btn-primary btn-block mb-3" v-on:click="facebookSignUp" type="submit">Facebook</button>
       <br>
@@ -57,12 +56,11 @@ export default {
   },
 
   methods:{
-    addUser(){
-      if(this.validUser()){
-    
-          debugger
-          this.$store.dispatch('addUser', this.user)
-          this.$router.push({path: '/admin'})          
+    logInUser(){
+      if(this.validUser()){   
+         
+          this.$store.dispatch('logInUser', this.user)
+          //this.$router.push({path: '/admin'})          
       }      
     },
 

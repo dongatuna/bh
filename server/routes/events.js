@@ -2,7 +2,9 @@ const express = require("express")
 const router = require("express-promise-router")()
 const {validateBody, schemas } = require("../helpers/routeHelpers")
 const EventController = require("../controllers/events")
-const checkAuth = require('../middleware/check_auth')
+const passport = require('passport')
+const passportConf = require('../passport')
+const passportJWT = passport.authenticate('jwt', { session: false })
 
 //const checkAuth = require('../middleware/check-auth');
 const multer = require('multer');
@@ -54,7 +56,7 @@ const upload = multer({
 //create a post
 //user needs to be authenticated
 
-router.route('/').post(checkAuth, upload.array('eventfiles'), validateBody(schemas.eventSchema), EventController.createEvent);
+router.route('/').post(passportJWT, upload.array('eventfiles'), validateBody(schemas.eventSchema), EventController.createEvent);
 
 //validateBody(schemas.eventSchema), 
 //read many event
@@ -64,15 +66,15 @@ router.route('/:id').get(EventController.readEventById);
 
 //read posts by a single user
 //user needs to be authenticated
-router.route('/:id').get(checkAuth, EventController.readUserEvents)
+router.route('/:id').get(passportJWT, EventController.readUserEvents)
 
 //update a post
 //user needs to be authenticated
-router.route('/:id').patch(checkAuth, EventController.updateEvent)
+router.route('/:id').patch(passportJWT, EventController.updateEvent)
 // router.route('/:id').patch(validateBody(schemas.eventSchema), EventController.updateEvent)
 //delete a post
 //user needs to be authenticated
-router.route('/:id').delete(checkAuth, EventController.deleteEvent);
+router.route('/:id').delete(passportJWT, EventController.deleteEvent);
 
 module.exports = router;
 

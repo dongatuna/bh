@@ -14,8 +14,10 @@ router.route("/signup")
     .post(validateBody(schemas.userSchema), UsersController.signUp);
 
 router.route("/signin")
-    .post( passportSignIn, UsersController.signIn);
+    .post(passportSignIn, UsersController.signIn);
 
+router.route("/logout")
+    .get( /** */ passportJWT, UsersController.logOut);    
 router.route("/auth/google")
     .post(passport.authenticate("googleToken", {session: false}), UsersController.googleOAuth)
 

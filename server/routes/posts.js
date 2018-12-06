@@ -1,18 +1,21 @@
-const express = require("express");
-const router = require("express-promise-router")();
-const {validateBody, schemas } = require("../helpers/routeHelpers");
-const PostController = require("../controllers/posts");
+const express = require("express")
+const router = require("express-promise-router")()
+const {validateBody, schemas } = require("../helpers/routeHelpers")
+const PostController = require("../controllers/posts")
+const passport = require('passport')
+const passportConf = require('../passport')
+const passportJWT = passport.authenticate('jwt', { session: false })
 
-const checkAuth = require('../middleware/check-auth');
-const multer = require('multer');
+
+const multer = require('multer')
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null, "./uploads/posts");
+        cb(null, "./uploads/posts")
     },
 
     filename: function(req, file, cb){
-        cb(null, new Date().toISOString().replace(/:/g, '-')+file.originalname);
+        cb(null, new Date().toISOString().replace(/:/g, '-')+file.originalname)
     }
 
 });
@@ -28,15 +31,15 @@ const fileFilter = (req, file, cb)=>{
         - Image
     */
 
-    const format = acceptedFormats.includes(file.mimetype);
+    const format = acceptedFormats.includes(file.mimetype)
 
-    console.log("this is the file mimetype ", file.mimetype);
-    console.log("This accepted ", format);
+    console.log("this is the file mimetype ", file.mimetype)
+    console.log("This accepted ", format)
 
     if(format){
-        cb(null, true);
+        cb(null, true)
     }else{
-        cb(null, false);
+        cb(null, false)
     }
 }
 
@@ -49,7 +52,7 @@ const upload = multer({
 //create a post
 //user needs to be authenticated
 
-router.route('/').post(checkAuth, upload.array("postImage"), validateBody(schemas.postSchema), PostController.createPost);
+router.route('/').post(passportJWT, upload.array("postImage"), validateBody(schemas.postSchema), PostController.createPost);
 
 //read many posts
 router.route('/').get(PostController.readPosts);
@@ -59,11 +62,11 @@ router.route('/:id').get(PostController.readPostById);
 
 //update a post
 //user needs to be authenticated
-router.route('/:id').patch(checkAuth, validateBody(schemas.postSchema), PostController.updatePost)
+router.route('/:id').patch(passportJWT, validateBody(schemas.postSchema), PostController.updatePost)
 
 //delete a post
 //user needs to be authenticated
-router.route('/:id').delete(checkAuth, PostController.deletePost);
+router.route('/:id').delete(passportJWT, PostController.deletePost);
 
 module.exports = router;
 

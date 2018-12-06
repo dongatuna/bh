@@ -1,10 +1,11 @@
-const express = require("express");
-const router = require("express-promise-router")();
+const express = require("express")
+const router = require("express-promise-router")()
+const {validateBody, schemas } = require("../helpers/routeHelpers")
+const CVController = require("../controllers/resumes")
+const passport = require('passport')
+const passportConf = require('../passport')
+const passportJWT = passport.authenticate('jwt', { session: false })
 
-const {validateBody, schemas } = require("../helpers/routeHelpers");
-
-const CVController = require("../controllers/resumes");
-const checkAuth = require('../middleware/check-auth');
 const multer = require('multer');
 
 const storage = multer.diskStorage({
@@ -48,17 +49,17 @@ const upload = multer({
 //create a post
 //user needs to be authenticated
 
-router.route('/').post(checkAuth, upload.array("CVdocs"), validateBody(schemas.CVSchema), CVController.createCV);
+router.route('/').post(passportJWT, upload.array("CVdocs"), validateBody(schemas.CVSchema), CVController.createCV);
 
 //read a single post
-router.route('/:id').get(checkAuth, CVController.readCVById);
+router.route('/:id').get(passportJWT, CVController.readCVById);
 
 //update a post
 //user needs to be authenticated
-router.route('/:id').patch(checkAuth, validateBody(schemas.CVSchema), CVController.updateCV)
+router.route('/:id').patch(passportJWT, validateBody(schemas.CVSchema), CVController.updateCV)
 
 //delete a post
 //user needs to be authenticated
-router.route('/:id').delete(checkAuth, CVController.deleteCV);
+router.route('/:id').delete(passportJWT, CVController.deleteCV);
 
 module.exports = router;

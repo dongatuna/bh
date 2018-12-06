@@ -6,13 +6,10 @@
     <div class="container mt-5 col-sm-10 col-md-6 col-lg-4 p-5"> 
       <form class="form-signin" role="form" v-on:submit.prevent="addUser">
         <div class="text-center mb-4">        
-        <p>Please provide the following information </p>       
+        <h5>Please provide the following information </h5>       
       </div>
 
-      <!-- <div class="form-label-group">
-        <input type="text" class="form-control" placeholder="Preferred Name" name="username" id="username" v-model="user.name" required>
-        <label for="name">Preferred Name</label>
-      </div>    -->
+     
 
        <div class="form-group">
         

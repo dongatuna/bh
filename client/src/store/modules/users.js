@@ -13,13 +13,11 @@ const getters = {
       */
     getToken: state => state.token!==null
   };
-  
 
 //mutations
-
 const mutations = {
     ADD_USER:(state, payload)=>state.token = payload,    
-    REMOVE_USER:(state) => state.token = null,
+    REMOVE_USER:(state, payload) => state.token = payload,
 };
 
 //actions
@@ -42,11 +40,49 @@ const actions = {
 
           localStorage.setItem('access_token', token)          
   
-          context.commit("ADD_USER", token);
+          context.commit("ADD_USER", token)
         
       } catch (error) {
         alert(error);
       }
+    },
+
+    async logInUser(context, payload) {
+      
+      try {
+        //  debugger
+          const response = await axios({
+                method: 'post',
+                url: '/users/signin',
+                data: payload,
+                headers:{"Content-Type":"application/json"}
+          })
+          
+          const token = response.data.token
+
+          debugger
+          localStorage.setItem('access_token', token)          
+  
+          context.commit("ADD_USER", token)
+        
+      } catch (error) {
+        alert(error);
+      }
+    },
+
+    async destroyToken(context, payload){
+       // axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+
+        const response = await axios({
+              method: 'get',
+              url: '/users/logout',
+              headers: { Authorization: `${context.state.token}` }
+              //headers:{"Content-Type":"application/json"}
+            })
+        localStorage.removeItem('access_token')
+        
+        context.commit('REMOVE_USER', response.data.null_token)
+        
     },
   
      
@@ -87,21 +123,12 @@ const actions = {
       } catch (error) {
         alert(error);
       }
-    },
+    }
+
+    //action for password reset
 
   
-    async updateDBEvent(context, payload) {
-      try {
-        const response = await axios.patch("/events/:id", {
-          data: payload,
-          headers: { "Content-Type": "application/json" }
-        });
-  
-        context.commit("UPDATE_EVENT", response.data);
-      } catch (error) {
-        alert(error);
-      }
-    }
+   
   }
   
   export default {

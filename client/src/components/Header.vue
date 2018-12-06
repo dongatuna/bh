@@ -21,10 +21,11 @@
                     <router-link v-bind:to="{name: 'viewCandidates'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Candidates</a></router-link>
                     <router-link v-bind:to="{name: 'listEvents'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Events</a></router-link>
                     <router-link v-bind:to="{name: 'contactUs'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Contact Us</a></router-link>
-                    <!-- <div class="justify-content-end"></div> -->
-                    <router-link v-bind:to="{name: 'login'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Login</a></router-link>
-                    <router-link v-bind:to="{name: 'signup'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Sign Up</a></router-link>                 
                    
+                    <router-link v-if="!getToken||getToken=='undefined'" v-bind:to="{name: 'login'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Log in</a></router-link> 
+                    <router-link v-if="!getToken||getToken==='undefined'" v-bind:to="{name: 'signup'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Sign up</a></router-link> 
+                    <a v-if="getToken" v-on:click="destroyToken()" class="nav-link text-light text-capitalize font-weight-bold px-3">Log out</a>                  
+                 
                     <!-- <button class="btn btn-danger btn-block m-3 text-light" type="submit">Login</button>
                     <button class="btn btn-danger btn-block m-3 text-light" v-on:click="signUp"  type="submit">Sign up</button> -->
                     <!--<div id="header"></div> -->
@@ -47,6 +48,8 @@
 </template>
 
 <script>
+import { store } from "../store/store"
+import {mapGetters} from 'vuex'
 
 import SignUp from './auth/Signup.vue'
 import LogIn from './auth/Login.vue'
@@ -57,10 +60,21 @@ export default {
         "sign-up":SignUp,
         "log-in": LogIn
     },
+
+    computed: {
+        ...mapGetters([
+            "getToken"
+        ])    
+    },
+
     methods:{
         signUp(){
             let element = this.$refs.signupmodal.$el
             $(element).modal('show')
+        },
+
+        destroyToken(){
+            this.$store.dispatch('destroyToken')
         }
     }
 }

@@ -14,7 +14,7 @@ function roleSelection(to, from, next){
     if(localStorage.token){
         next('/role')
     }else{
-        next('/signup')
+        next()
     }
 }
 

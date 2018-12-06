@@ -8,30 +8,32 @@ const LocalStrategy = require('passport-local').Strategy
 const User = require("./models/user")
 const config = require('./configuration/index.js')
 
-
 //JSON WEB TOKENS STRATEGY
 
 passport.use(new JwtStrategy({
     jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-    secretOrKey:config.JWT_SECRET
+    secretOrKey: config.JWT_SECRET
 },  async(payload, done)=>{
     try{
+
+        console.log("This is the payload sub", payload.sub)
         //find the user specified in the token
-        const user = await User.findById(payload.sub);
+        const user = await User.findById(payload.sub)
+
+        
 
         //if the user doesn't exist, return empty object and false 
         if(!user){
-            return done(null, false);            
+            return done(null, false)            
         }
 
         //Otherwise, return the user
-        done(null, user);
+        done(null, user)
 
     }catch(error){
-        done(error, false);
+        done(error, false)
     }
-}));
-
+}))
 
 //LOCAL STRATEGY - to log in users
 
@@ -40,23 +42,25 @@ passport.use(new LocalStrategy({
 }, async(email, password, done )=>{
     try{
         //Find the user given the email
-        const user = await User.findOne({email});
-
+        const user = await User.findOne({"local.email": email})
+        
+        console.log(user)
         //If not user, handle it
         if(!user){
-            return done(null, false);
+            return done(null, false)
         }
 
         //Check if the password is a match
-        const isMatch = await user.validPassword(password);
+        const isMatch = await user.validPassword(password)
 
         //If not user, inform user
-        if(!isMatch) return done(null, false);
+        if(!isMatch) return done(null, false)
 
         //Otherwise, return the user
-        done(null, user);
+        done(null, user)
     }catch(error){
-        done(error, false);
+        done(error, false)
+
     }
 }));
 
@@ -92,12 +96,10 @@ passport.use('googleToken', new GooglePlusTokenStrategy({
 
     }catch(error){
         done(error, false, error.message);
-    }
-    
-}));
+    }    
+}))
 
 //FACEBOOK STRATEGY - to sign up new users or log in returning users
-
 passport.use("facebookToken",new FacebookTokenStrategy({
     //add configurations
     clientID: config.oauth.facebook.clientID,
