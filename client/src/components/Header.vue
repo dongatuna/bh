@@ -22,20 +22,10 @@
                     <router-link v-bind:to="{name: 'listEvents'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Events</a></router-link>
                     <router-link v-bind:to="{name: 'contactUs'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Contact Us</a></router-link>
                    
-                    <router-link v-if="!getToken||getToken=='undefined'" v-bind:to="{name: 'login'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Log in</a></router-link> 
-                    <router-link v-if="!getToken||getToken==='undefined'" v-bind:to="{name: 'signup'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Sign up</a></router-link> 
-                    <a v-if="getToken" v-on:click="destroyToken()" class="nav-link text-light text-capitalize font-weight-bold px-3">Log out</a>                  
-                 
-                    <!-- <button class="btn btn-danger btn-block m-3 text-light" type="submit">Login</button>
-                    <button class="btn btn-danger btn-block m-3 text-light" v-on:click="signUp"  type="submit">Sign up</button> -->
-                    <!--<div id="header"></div> -->
-                    <!-- <div class="container justify-content-end">
-                        <button class="btn btn-danger btn-block m-3 text-light" v-on:click="signUp"  type="submit">Sign up</button>
-                        <sign-up ref="signupmodal"></sign-up>
-                    </div> -->
-                  
-                    
-                    
+                    <router-link v-if="!getToken" v-bind:to="{name: 'login'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Log in</a></router-link> 
+                    <router-link v-if="!getToken" v-bind:to="{name: 'signup'}" tag="li"><a class="nav-link text-light text-capitalize font-weight-bold px-3">Sign up</a></router-link> 
+                    <a v-if="getToken" v-on:click="destroyToken" class="nav-link text-light text-capitalize font-weight-bold px-3">Log out</a>                  
+                           
                     
 
                 </ul>

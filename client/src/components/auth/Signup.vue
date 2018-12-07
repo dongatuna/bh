@@ -5,7 +5,7 @@
       <form class="form-signin" v-on:submit.prevent="addUser()">
         <div class="text-center mb-4">        
         <h1 class="h3 mb-3 font-weight-normal">Kinshealth</h1>
-        <p>Join to find caregivers and nurses, prepare for state licensing exams, and find jobs.</p>
+        <p>Join to find caregivers and nurses, prepare for state licensing exams and get a job.</p>
         
       </div>
 
@@ -112,14 +112,20 @@ export default {
     }
   },
 
-  //user
+  computed: {
+    ...mapGetters([
+      "getToken"
+    ])
+  },
+
+  
 
   methods:{
     addUser(){
       if(this.validUser()){
-          this.user.signupmethod = "local"
+          //this.user.signupmethod = "local"
           this.$store.dispatch('addUser', this.user)
-          this.$router.push({path: '/admin'})         
+                 
       }      
     },
 
@@ -132,23 +138,27 @@ export default {
       //console.log(googleUser.getAuthResponse().id_token)
       debugger
        this.$store.dispatch('googleSignUp',  this.userToken ) 
+       this.$router.push({path: '/role'})  
     },
 
     onFBSignInSuccess(response){
       FB.login(user => {
         //console.log("This is the response", response.authResponse.accessToken) 
           if (response.status === 'connected') {
-        // Logged into your app and Facebook.
-            
-            debugger
-            console.log(user.authResponse)
+                
+
             this.userToken = user.authResponse.accessToken
             debugger
 
-            //this.addFBUser(this.userToken)
-                this.$store.dispatch('facebookSignUp',  this.userToken ) 
+            this.$store.dispatch('facebookSignUp',  this.userToken ) 
+            
+            this.$router.push({path: '/role'}) 
+            // if(this.getToken){
+            //   this.$router.push({path: '/role'}) 
+            // }
+            
           } else {
-              return this.userToken=""
+              return this.userToken=null
           } //
 
       }) 

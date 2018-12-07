@@ -24,10 +24,14 @@ module.exports = {
 
     schemas:{
         userSchema: Joi.object().keys({
-            role: Joi.string(),
+            role: Joi.string().required(),
             name: Joi.string().allow("").optional(),
             email: Joi.string().email({ minDomainAtoms: 2 }).required(),
             password: Joi.string()
+        }),
+
+        roleSchema: Joi.object().keys({
+            role: Joi.string().required()            
         }),
 
         CVSchema: Joi.object().keys({

@@ -17,7 +17,7 @@ const getters = {
 //mutations
 const mutations = {
     ADD_USER:(state, payload)=>state.token = payload,    
-    REMOVE_USER:(state, payload) => state.token = payload,
+    REMOVE_USER:(state, payload) => state.token = null,
 };
 
 //actions
@@ -45,6 +45,29 @@ const actions = {
       } catch (error) {
         alert(error);
       }
+    },
+
+    async updateRole(context, payload){
+      try {
+        //  debugger
+          const response = await axios({
+              method: 'patch',
+              url: '/users/role',
+              data: payload,
+              headers:{"Content-Type":"application/json"}
+          })
+          
+          const token = response.data.token
+
+          debugger
+          localStorage.setItem('access_token', token)          
+  
+          context.commit("ADD_USER", token)
+        
+      } catch (error) {
+        alert(error);
+      }
+
     },
 
     async logInUser(context, payload) {
@@ -76,10 +99,15 @@ const actions = {
         const response = await axios({
               method: 'get',
               url: '/users/logout',
-              headers: { Authorization: `${context.state.token}` }
+              //headers: { Authorization: `${context.state.token}` }
               //headers:{"Content-Type":"application/json"}
-            })
-        localStorage.removeItem('access_token')
+        })
+        
+        //console.log(localStorage.getItem('access_token'))
+        if(localStorage.getItem('access_token')===undefined){
+            localStorage.setItem('access_token', null)
+            context.commit('REMOVE_USER', null)
+        }                
         
         context.commit('REMOVE_USER', response.data.null_token)
         
@@ -119,7 +147,7 @@ const actions = {
   
            context.commit("ADD_USER", token)  
         
-        //context.commit("DELETE_EVENT", response.data);
+
       } catch (error) {
         alert(error);
       }

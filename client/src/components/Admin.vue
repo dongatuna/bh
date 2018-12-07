@@ -61,7 +61,17 @@ export default {
     //         id: this.$router.params.id
     //     }
     // },
-    
+    beforeRouteEnter(to, from, next){
+
+        if(localStorage.access_token===null){
+
+            debugger
+            next(false)
+        }else{
+            next()
+        }
+    },
+
     computed:{
         ...mapGetters([
             "getEvents"

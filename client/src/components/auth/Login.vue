@@ -60,7 +60,7 @@ export default {
       if(this.validUser()){   
          
           this.$store.dispatch('logInUser', this.user)
-          //this.$router.push({path: '/admin'})          
+          this.$router.push({path: '/admin'})          
       }      
     },
 

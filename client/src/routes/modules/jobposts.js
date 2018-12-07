@@ -4,7 +4,7 @@ import ViewJob from '../../components/jobs/ViewJob.vue'
 import ListJobs from '../../components/jobs/ListJobs.vue'
 
 function isLoggedIn(to, from, next){
-    if(localStorage.token){
+    if(localStorage.access_token){
         next() 
     }else {
         next('/login')

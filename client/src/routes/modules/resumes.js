@@ -4,7 +4,7 @@ import ViewResume from '../../components/resumes/ViewResume.vue'
 import ViewCandidates from '../../components/resumes/ViewCandidates.vue'
 
 function isLoggedIn(to, from, next){
-    if(localStorage.token){
+    if(localStorage.access_token){
         next() 
     }else {
         next('/login')

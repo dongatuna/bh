@@ -80,7 +80,6 @@ export default {
         return{
             score: 0, 
             num: 0,
-            //pagenum: 1,
             answerchoices: [],
             wrong: [], 
             answers: [], 

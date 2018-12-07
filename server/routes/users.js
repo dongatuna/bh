@@ -11,13 +11,15 @@ const passportJWT = passport.authenticate('jwt', { session: false });
 
 
 router.route("/signup")
-    .post(validateBody(schemas.userSchema), UsersController.signUp);
+    .post(validateBody(schemas.userSchema), UsersController.signUp)
 
+router.route("/role")
+    .patch(/*validateBody(schemas.roleSchema),  passportJWT,*/ UsersController.updateRole)
 router.route("/signin")
     .post(passportSignIn, UsersController.signIn);
 
 router.route("/logout")
-    .get( /** */ passportJWT, UsersController.logOut);    
+    .get( /**passportJWT, */  UsersController.logOut);    
 router.route("/auth/google")
     .post(passport.authenticate("googleToken", {session: false}), UsersController.googleOAuth)
 

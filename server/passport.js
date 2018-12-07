@@ -16,11 +16,8 @@ passport.use(new JwtStrategy({
 },  async(payload, done)=>{
     try{
 
-        console.log("This is the payload sub", payload.sub)
         //find the user specified in the token
         const user = await User.findById(payload.sub)
-
-        
 
         //if the user doesn't exist, return empty object and false 
         if(!user){
@@ -31,6 +28,7 @@ passport.use(new JwtStrategy({
         done(null, user)
 
     }catch(error){
+        console.log("Before the error", error)
         done(error, false)
     }
 }))
@@ -85,6 +83,7 @@ passport.use('googleToken', new GooglePlusTokenStrategy({
         const newUser = new User({
             _id: new mongoose.Types.ObjectId(),
             signupmethod: 'google',
+            name: profile.displayName,
             google:{
                 id: profile.id,
                 email: profile.emails[0].value
@@ -100,7 +99,7 @@ passport.use('googleToken', new GooglePlusTokenStrategy({
 }))
 
 //FACEBOOK STRATEGY - to sign up new users or log in returning users
-passport.use("facebookToken",new FacebookTokenStrategy({
+passport.use("facebookToken", new FacebookTokenStrategy({
     //add configurations
     clientID: config.oauth.facebook.clientID,
     clientSecret: config.oauth.facebook.clientSecret
@@ -123,6 +122,7 @@ passport.use("facebookToken",new FacebookTokenStrategy({
         const newUser = new User({
             _id: new mongoose.Types.ObjectId(),
             signupmethod: 'facebook',
+            name: profile.displayName,
             facebook:{
                 id: profile.id,
                 email: profile.emails[0].value

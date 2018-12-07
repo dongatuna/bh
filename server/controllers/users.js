@@ -21,16 +21,18 @@ module.exports = {
         try{
 
             console.log('console log req value...', req.body)
-            const { role, name, email, signupmethod, password } = req.body;
+            const { role, name, email, password } = req.body
+
+
             //check if the user exists
-            const result = await User.findOne({email});
+            const result = await User.findOne({email})
 
             console.log("The results is", result)
             
             if(result){
                 res.status(404).json({
                     message: "The email has been taken"
-                });
+                })
             }
 
             //create new user
@@ -38,36 +40,33 @@ module.exports = {
                // _id: new mongoose.Types.ObjectId(),
                 role,
                 name,            
-                signupmethod,
+                signupmethod: "local",
                 local: {
                     email,
                     password,
                 }             
-            });
+            })
 
-            console.log("The new user is: ",newUser);
+            console.log("The new user is: ",newUser)
             await newUser.save()
-
  
             //Generate the token
-            const token = signToken(newUser);
+            const token = signToken(newUser)
            // console.log(token);
             //Respond with the token
-            res.status(200).json({token});
+            res.status(200).json({token})
             
         }catch(error){
             res.status(401).json({
                 message: "Authentication failed"
-            });
+            })
         }
-    },
-
-    
+    },    
 
     signIn: async(req, res, next)=>{
         //The signin is handled by passport.js - 
-       console.log('here is the req.user', req.user)
-       const token = signToken(req.user)
+        console.log('here is the req.user', req.user)
+        const token = signToken(req.user)
         //console.log(token);
 
         res.status(200).json({token})
@@ -76,37 +75,60 @@ module.exports = {
     logOut: async(req, res, next)=>{
         try{
 
-            console.log("THIS IS REQ.USER...", req.user)
-            
-            req.logout()
-
             const null_token = null
-            res.status(200).json({null_token})
+
+            if(req.user===undefined){
+                
+                res.status(200).json({null_token})
+            }else{
+                req.logout()
+                res.status(200).json({null_token})
+            }
+            
+            
         }catch(error){
-            console.log("I am NOT here...")
-            res.status(401).json({error})
+            
+          res.status(401).json({
+              message:  "There has been an error loggin out",
+              error
+            })
         }        
     },
 
     facebookOAuth: async(req, res, next)=>{
-        console.log("Facebook authentication... ");
-
-        console.log("req.user", req.user);
-
-        const token = signToken(req.user);
-        res.status(200).json({token});
+        
+        const token = signToken(req.user)
+        res.status(200).json({token})
 
     },
 
-    googleOAuth: async(req, res, next)=>{
+    googleOAuth: async(req, res, next) => {
         //Generate token
-        console.log("Google got me here");
+        console.log("Google got me here")
 
         console.log(req.user);
 
-        const token = signToken(req.user);
-        res.status(200).json({token});
+        const token = signToken(req.user)
+        res.status(200).json({token})
     },
 
+    updateRole: async(req, res, next) => {
+        try{
+           
+            console.log("Here is the req.body", req.body)
+            console.log("Here is the req.user", req.user)
+            const results = await User.update({_id:req.user._id}, {role: req.body.role})
 
+            console.log("Here are the results...", results)
+
+            if(results){
+                res.status(200).json({
+                    message: "Role has been updated..."
+                })
+            }
+
+        }catch(error){
+            res.status(401).json({error})
+        }        
+    } 
 }

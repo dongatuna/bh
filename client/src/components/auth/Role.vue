@@ -18,12 +18,12 @@
           </label>
 
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="jobseeker" value="jobseeker" v-model="user.role" required>
+            <input class="form-check-input" type="radio" name="role" id="jobseeker" value="jobseeker" v-model="role" required>
             <label class="form-check-label" for="jobseeker">Yes</label>
           </div>
 
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="employer" value="employer" v-model="user.role" required>
+            <input class="form-check-input" type="radio" name="role" id="employer" value="employer" v-model="role" required>
             <label class="form-check-label" for="employer">No</label>
           </div>
           <br>
@@ -56,10 +56,7 @@ export default {
   data(){
     return{
       signUpErrors:[],
-      user:{       
-        name: "",
-        role: "",    
-      }
+      role: ""      
     }
   },
 
@@ -68,7 +65,7 @@ export default {
       if(this.validUser()){
     
           debugger
-          this.$store.dispatch('addUser', this.user)
+          this.$store.dispatch('updateRole', this.role)
           this.$router.push({path: '/admin'})
           
       }
@@ -77,13 +74,10 @@ export default {
 
     validUser(){     
 
-      if(this.user.role==""){
+      if(this.role==""){
         this.signUpErrors['role']= 'Please select your role'
       } 
-
-      if(this.user.name==""){
-        this.signUpErrors['name']= 'Please select your role'
-      } 
+ 
 
       if(this.signUpErrors.length>0){
         return false

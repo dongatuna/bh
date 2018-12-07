@@ -4,7 +4,7 @@ import ViewEvent from '../../components/events/ViewEvent.vue'
 import ListEvents from '../../components/events/ListEvents.vue'
 
 function isLoggedIn(to, from, next){
-    if(localStorage.token){
+    if(localStorage.access_token){
         next() 
     }else {
         next('/login')
