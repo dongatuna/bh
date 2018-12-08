@@ -18,12 +18,12 @@
           </label>
 
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="jobseeker" value="jobseeker" v-model="role" required>
+            <input class="form-check-input" type="radio" name="role" id="jobseeker" value="jobseeker" v-model="user.role" required>
             <label class="form-check-label" for="jobseeker">Yes</label>
           </div>
 
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="employer" value="employer" v-model="role" required>
+            <input class="form-check-input" type="radio" name="role" id="employer" value="employer" v-model="user.role" required>
             <label class="form-check-label" for="employer">No</label>
           </div>
           <br>
@@ -53,10 +53,18 @@ import {mapGetters} from 'vuex'
 
 export default {
   name: 'selectrole',
+
+  computed:{
+    ...mapGetters([ "getUserId"])
+  },
+
   data(){
     return{
       signUpErrors:[],
-      role: ""      
+      user:{ 
+        role: "",
+        id: this.getUserId || null
+      }      
     }
   },
 
@@ -64,8 +72,9 @@ export default {
     addUser(){
       if(this.validUser()){
     
+          //this.user.id = this.getUserId
+          this.$store.dispatch('updateRole', this.user)
           debugger
-          this.$store.dispatch('updateRole', this.role)
           this.$router.push({path: '/admin'})
           
       }

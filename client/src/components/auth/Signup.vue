@@ -132,10 +132,9 @@ export default {
     onSignInSuccess (googleUser) {
       // `googleUser` is the GoogleUser object that represents the just-signed-in user.
       // See https://developers.google.com/identity/sign-in/web/reference#users
-      //const profile = googleUser.getBasicProfile() // etc etc
-      this.userToken = "ya29.GltoBiMqBXfifWTwc0izQTW3nCRneMUsXSmtIjyNyNQYPS4AHTA-Q3yA395wXG4uUVviFUt36po9OEzqygpUnZF0rzuVncqBPg0rKyEvVbDR3px5WZDdORNv0dNf"//googleUser.getAuthResponse().id_token
-      //console.log(googleUser.getBasicProfile())
-      //console.log(googleUser.getAuthResponse().id_token)
+      this.userToken = googleUser.Zi.access_token // etc etc
+
+
       debugger
        this.$store.dispatch('googleSignUp',  this.userToken ) 
        this.$router.push({path: '/role'})  

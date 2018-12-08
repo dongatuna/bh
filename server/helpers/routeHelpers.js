@@ -55,7 +55,7 @@ module.exports = {
         }),
 
         eventSchema: Joi.object().keys({
-            //userId: Joi.string().required(),
+            userId: Joi.string().required(),
             audience: Joi.string().required(), 
             cost: Joi.number().required(),
             date: Joi.date().required(),          
@@ -67,8 +67,7 @@ module.exports = {
             eventfiles:  Joi.array().items(Joi.string()),
         }),
 
-        questionSchema: Joi.object().keys({
-          
+        questionSchema: Joi.object().keys({          
             answer: Joi.number().required(),
             choices: Joi.array().items(Joi.string()).required(),
             question:  Joi.string().required(),

@@ -96,16 +96,19 @@ export default {
     computed:{
         ...mapGetters([        
             "getEvent",
-            "getFiles"
+            "getFiles",
+            "getUserId"
         ])      
     }, 
     
     data() {        
         return {     
                
-            errors: [],    
+            errors: [], 
+            
             selectedFiles: [],                      
-            newEvent: {                            
+            newEvent: {  
+                userId: this.getUserId || null,                             
                 topic: null,
                 description: null,
                 location: null,
@@ -167,15 +170,14 @@ export default {
                 this.errors['cost'] = 'Cost of the event required; put 0.00 if it free.'
             }
             
-            if (this.errors.length==0&&
+            if (this.errors.length ==0 &&
                 this.newEvent.topic &&
                 this.newEvent.description &&
                 this.newEvent.location &&
                 this.newEvent.audience&& 
                 this.newEvent.date &&
                 this.newEvent.cost&&
-                this.newEvent.time
-                //this.event
+                this.newEvent.time                
             ){
                 return true;
             }
@@ -194,12 +196,14 @@ export default {
             }
             
             debugger
-            if (this.checkForm()) {
+            this.newEvent.userId = this.getUserId
+
+            if (this.checkForm()&&this.newEvent!==null) {
                 
                 //add attached files to the file state
-                if(this.selectedFiles[0].length>0){                    
-                    this.$store.commit('ADD_FILES', this.selectedFiles[0])                
-                }
+                // if(this.selectedFiles[0].length>0){                    
+                //     this.$store.commit('ADD_FILES', this.selectedFiles[0])                
+                // }
                 debugger
                 this.$store.commit('ADD_EVENT',  this.newEvent) 
                    

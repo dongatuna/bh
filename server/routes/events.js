@@ -56,13 +56,13 @@ const upload = multer({
 //create a post
 //user needs to be authenticated
 
-router.route('/').post(passportJWT, upload.array('eventfiles'), validateBody(schemas.eventSchema), EventController.createEvent);
+router.route('/').post(/*passportJWT, */upload.array('eventfiles'), validateBody(schemas.eventSchema), EventController.createEvent)
 
 //validateBody(schemas.eventSchema), 
 //read many event
-router.route('/').get(EventController.readEvents);
+router.route('/').get(EventController.readEvents)
 //read a single post
-router.route('/:id').get(EventController.readEventById);
+router.route('/:id').get(EventController.readEventById)
 
 //read posts by a single user
 //user needs to be authenticated

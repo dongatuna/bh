@@ -12,7 +12,7 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
     plugins: [createPersistedState()],
     modules:{
-        event, jobpost, questions, resume, user
+       event, jobpost, questions, resume, user
     }
 })
 

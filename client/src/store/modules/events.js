@@ -20,8 +20,8 @@ const getters = {
 };
 
 const mutations = {
-  ADD_FILES:(state, payload)=>state.eventfiles = payload,
-  EVENTS:(state, payload)=>state.events = payload,
+  ADD_FILES:(state, payload) => state.eventfiles = payload,
+  EVENTS:(state, payload) => state.events = payload,
   //debugger
  
   ADD_EVENT:(state, payload) => state.event = Object.assign(payload),

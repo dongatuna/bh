@@ -2,22 +2,27 @@ import axios from "axios";
 
 //state
 const state = {
-    token: localStorage.getItem('access_token') || null   
+    token: localStorage.getItem('access_token') || null,
+    userId: null   
 };
 //getters
 const getters = {
     /*
-          in the computed properties in the vue  
-              - sort events by user
-              - get the property length
-      */
-    getToken: state => state.token!==null
+      in the computed properties in the vue  
+        - sort events by user
+        - get the property length
+    */
+    getToken: state => state.token!==null,
+    getUserId: state =>state.userId
+
   };
 
 //mutations
 const mutations = {
     ADD_USER:(state, payload)=>state.token = payload,    
-    REMOVE_USER:(state, payload) => state.token = null,
+    REMOVE_USER_TOKEN:(state) => state.token = null,
+    REMOVE_USER_ID: (state) => state.userId = null,
+    SET_USER_ID: (state, payload) => state.userId = payload
 };
 
 //actions
@@ -59,9 +64,9 @@ const actions = {
           
           const token = response.data.token
 
-          debugger
+          
           localStorage.setItem('access_token', token)          
-  
+          debugger
           context.commit("ADD_USER", token)
         
       } catch (error) {
@@ -95,22 +100,16 @@ const actions = {
 
     async destroyToken(context, payload){
        // axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+       localStorage.setItem('access_token', null)
+       context.commit('REMOVE_USER_TOKEN')  
+       context.commit('REMOVE_USER_ID')   
 
-        const response = await axios({
+        await axios({
               method: 'get',
-              url: '/users/logout',
-              //headers: { Authorization: `${context.state.token}` }
-              //headers:{"Content-Type":"application/json"}
-        })
-        
-        //console.log(localStorage.getItem('access_token'))
-        if(localStorage.getItem('access_token')===undefined){
-            localStorage.setItem('access_token', null)
-            context.commit('REMOVE_USER', null)
-        }                
-        
-        context.commit('REMOVE_USER', response.data.null_token)
-        
+              url: '/users/logout'              
+        })        
+       
+             
     },
   
      
@@ -121,11 +120,9 @@ const actions = {
              headers: { "Content-Type": "application/json" }
            })
 
-           const token = response.data.token
-
-           localStorage.setItem('access_token', token)          
+           const userId = response.data.userId              
   
-           context.commit("ADD_USER", token)  
+           context.commit("SET_USER_ID", userId)  
         
         //context.commit("DELETE_EVENT", response.data);
       } catch (error) {
@@ -141,11 +138,10 @@ const actions = {
            })
 
            debugger
-           const token = response.data.token
-
-           localStorage.setItem('access_token', token)          
+           
+           const userId = response.data.userId              
   
-           context.commit("ADD_USER", token)  
+           context.commit("SET_USER_ID", userId)   
         
 
       } catch (error) {

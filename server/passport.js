@@ -105,10 +105,7 @@ passport.use("facebookToken", new FacebookTokenStrategy({
     clientSecret: config.oauth.facebook.clientSecret
 }, async(accessToken, refreshToken, profile, done)=>{
     try{
-
-        console.log("This is the access Token ", accessToken);
-        console.log("This is the refresh Token ", refreshToken);
-        console.log("This is the profile ", profile);
+        
         //check if the user is in our database using the profile.id
         const existingUser = await User.findOne({"facebook.id":profile.id});
 

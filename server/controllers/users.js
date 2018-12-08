@@ -75,16 +75,12 @@ module.exports = {
     logOut: async(req, res, next)=>{
         try{
 
-            const null_token = null
+            req.logout()  
 
-            if(req.user===undefined){
-                
-                res.status(200).json({null_token})
-            }else{
-                req.logout()
-                res.status(200).json({null_token})
-            }
-            
+            res.status(200).json({
+                message: "You have successfully logged out",
+                loggedOut: true
+            })            
             
         }catch(error){
             
@@ -97,35 +93,30 @@ module.exports = {
 
     facebookOAuth: async(req, res, next)=>{
         
-        const token = signToken(req.user)
-        res.status(200).json({token})
+        const userId = req.user._id
+        //const token = signToken(req.user)
+        res.status(200).json({userId})
 
     },
 
     googleOAuth: async(req, res, next) => {
         //Generate token
-        console.log("Google got me here")
+        const userId = req.user._id
+        //const token = signToken(req.user)
+        res.status(200).json({userId})
 
-        console.log(req.user);
-
-        const token = signToken(req.user)
-        res.status(200).json({token})
     },
 
     updateRole: async(req, res, next) => {
-        try{
-           
-            console.log("Here is the req.body", req.body)
-            console.log("Here is the req.user", req.user)
-            const results = await User.update({_id:req.user._id}, {role: req.body.role})
+        try{          
 
-            console.log("Here are the results...", results)
+            console.log("Here are the results...", req.body)
 
-            if(results){
-                res.status(200).json({
-                    message: "Role has been updated..."
-                })
-            }
+            await User.update({_id:req.body.id}, {role: req.body.role})
+
+            const user = User.findById(req.body.id)
+            const token = signToken(user)
+            res.status(200).json({token})
 
         }catch(error){
             res.status(401).json({error})

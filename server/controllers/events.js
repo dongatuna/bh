@@ -9,7 +9,7 @@ module.exports = {
             debugger
             console.log("Here are the req files", req.files)
             console.log("I am in here and this is request", req.body)
-            const {/*userId,*/ topic, description, location, audience, date, time, cost} = req.body
+            const {userId, topic, description, location, audience, date, time, cost} = req.body
 
             debugger
             const eventfiles = []
@@ -28,7 +28,7 @@ module.exports = {
 
             const commEvent = new communityEvent({
                 _id: mongoose.Types.ObjectId(),
-                //userId,
+                userId,
                 topic,
                 description,
                 location,
