@@ -29,7 +29,7 @@
         <p><small>Employers and organizations should check "No". </small></p>
         <hr>
           <div class="form-label-group">
-            <input v-if="edit" type="text" class="form-control" placeholder="Preferred Name" name="username" id="username" v-model="getUser.name" required>
+            <input type="text" class="form-control" placeholder="Preferred Name" v-on:change="nameChange()" name="username" id="username" v-model="getUser.name" required>
             <label for="name">Enter preferred name</label>
           </div>     
       </div>
@@ -59,8 +59,7 @@ import {mapGetters} from 'vuex'
 
 
 export default {
-  name: 'selectrole',
-  props:['edit'],
+  name: 'userRole', 
 
   computed:{
     ...mapGetters([ "getUser"])  
@@ -70,50 +69,42 @@ export default {
     return{
       signUpErrors:[],
       user:{ 
+        _id: {type: String},
         role: {
-          type: "", 
-          updated: false
+          type: {type: String, default: 'jobseeker', enum: ['jobseeker', 'employer']} , 
+          updated: {type: Boolean, default: false }
         },        
 
-        name: "" 
+        name: {type: String } 
       }      
     }
   },
 
   methods:{
+    nameChange(){
+      return this.user.name = document.getElementById("username").value
+    },
+
     updateRole(){
-      if(this.validUser()){
-          if(this.edit){
-            this.user = Object.assign(this.getUser)
-            //this.selectedFiles = this.getFiles
-            this.user.role.updated = true
-          }
+      if(this.validUser()){         
 
           this.user.role.updated = true
-          //this.user.id = this.getUserId
+
+          if(!this.nameChange()){
+            this.user.name = this.getUser.name
+          }
+          
+          this.user._id = this.getUser.sub
           this.$store.dispatch('updateRole', this.user)
-          debugger
-          
-          //check user role type to decide which admin to send user
-          
-          
+
+          debugger   
       }      
     },  
-    
-    readUserToken(token){       
-      
-          this.user.name = jwt_decode(token).name
-          this.user.role.type = jwt_decode(token).role.type
-          this.user.role.updated = jwt_decode(token).role.updated
-
-          return this.user      
-          
-    },
 
     validUser(){     
 
       if(this.role==""){
-        this.signUpErrors['role']= 'Please select your role'
+        this.signUpErrors['role'] = 'Please select your role'
       } 
 
       if(this.signUpErrors.length>0){

@@ -70,12 +70,12 @@ passport.use('googleToken', new GooglePlusTokenStrategy({
 }, async(accessToken, refreshToken, profile, done)=>{
 
     try{
-        console.log("This is the access Token ", accessToken);
-        console.log("This is the refresh Token ", refreshToken);
-        console.log("This is the profile ", profile);
+        // console.log("This is the access Token ", accessToken);
+        // console.log("This is the refresh Token ", refreshToken);
+        // console.log("This is the profile ", profile);
 
         //Check whether the current user exists in our DB
-        const existingUser = await User.findOne({"google.id":profile.id});
+        const existingUser = await User.findOne({"google.id" : profile.id});
         if(existingUser){
             return done(null, existingUser);
         }
@@ -124,7 +124,7 @@ passport.use("facebookToken", new FacebookTokenStrategy({
                 id: profile.id,
                 email: profile.emails[0].value
             }        
-        });
+        })
 
         console.log("This is a new user ", newUser);
         //save the newly created user and return him 

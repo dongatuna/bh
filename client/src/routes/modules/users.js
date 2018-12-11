@@ -30,5 +30,5 @@ import UserRole from '../../components/auth/Role.vue'
 export default  [
     {path: '/signup', name: 'signup', component: Signup},
     {path: '/login', name:'login', component: Login}, 
-    {path: '/role', name:'userRole', component: UserRole, props:{edit: true}}, 
+    {path: '/role', name:'userRole', component: UserRole}, 
 ]

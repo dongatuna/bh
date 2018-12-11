@@ -17,7 +17,8 @@ const getters = {
 const mutations = {
     ADD_TOKEN:(state, payload) => state.token = payload,  
     ADD_USER:(state, payload) => state.user = payload,  
-    REMOVE_USER_TOKEN:(state) => state.token = null    
+    REMOVE_USER_TOKEN:(state) => state.token = null,    
+    REMOVE_USER:(state) => state.user = null  
 }
 
 //actions
@@ -95,6 +96,7 @@ const actions = {
        
        localStorage.setItem('access_token', null)
        context.commit('REMOVE_USER_TOKEN')  
+       context.commit('REMOVE_USER')
         await axios({
               method: 'get',
               url: '/users/logout'              
@@ -116,6 +118,7 @@ const actions = {
            const user = jwt_decode(token) 
            localStorage.setItem('access_token', token) 
            
+           debugger
            context.commit('ADD_TOKEN', token)
            context.commit('ADD_USER', user)            
         
@@ -131,7 +134,7 @@ const actions = {
              headers: { "Content-Type": "application/json" }
            })
 
-           debugger
+           
            
            const token = response.data.token             
   
@@ -139,6 +142,7 @@ const actions = {
            localStorage.setItem('access_token', token) 
            
            context.commit('ADD_TOKEN', token)
+           debugger
            context.commit('ADD_USER', user)    
 
       } catch (error) {

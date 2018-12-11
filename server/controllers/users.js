@@ -113,11 +113,16 @@ module.exports = {
     updateRole: async(req, res, next) => {
         try{          
 
-            console.log("Here are the results...", req.body)
+           // console.log("Here are the results...", req.body)
+            console.log("Here are the ID...", req.body._id)
+            console.log("Here is the name", req.body.name)
+            console.log("Here is the type", req.body.role.type)
+            console.log("Here is the updated", req.body.role.updated)
 
-            await User.update({_id:req.body.id}, {name: req.body.name, 'role.type': req.body.role.type, 'role.updated': req.body.role.updated} /*{ updatedAt:  type: Date, default:  Date.now },*/)
+            await User.update({_id:req.body._id}, {name: req.body.name, 'role.type': req.body.role.type, 'role.updated': req.body.role.updated} /*{ updatedAt:  type: Date, default:  Date.now },*/)
 
-            const user = await User.findById(req.body.id)
+            const user = await User.findById(req.body._id)
+            console.log(user)
             const token = signToken(user)
             res.status(200).json({token})
 
