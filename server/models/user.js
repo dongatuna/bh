@@ -6,11 +6,11 @@ const userSchema = mongoose.Schema({
     //_id: mongoose.Schema.Types.ObjectId,
     createdAt: { type: Date, default: Date.now },
 
-    role: {type: String,
-         enum: ['employer','jobseeker'],
-         default: "jobseeker"
+    role: {
+         type: {type: String, enum: ['employer','jobseeker'], default: "jobseeker" },
+         updated: {type: Boolean, default: false},
          //required: true
-    },
+    },   
 
     name:String, 
 
@@ -19,7 +19,6 @@ const userSchema = mongoose.Schema({
         enum: ['facebook', 'google', 'local'],
         required: true
     },
-
     
     facebook: {
         id:{
@@ -47,7 +46,7 @@ const userSchema = mongoose.Schema({
         }
     }
     
-});
+})
 
 //this method gets called before the mongoose save method on object User
 userSchema.pre('save', async function(next){

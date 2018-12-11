@@ -74,7 +74,8 @@ export default {
 
     computed:{
         ...mapGetters([
-            "getEvents"
+            "getEvents",
+            "getUser"
         ])
     },
 

@@ -2,7 +2,7 @@
 
 <section> 
     <div class="container mt-5 col-sm-10 col-md-6 col-lg-4 p-5">
-      <form class="form-signin" v-on:submit.prevent="addUser()">
+      <form class="form-signin" v-on:submit.prevent="addUser">
         <div class="text-center mb-4">        
         <h1 class="h3 mb-3 font-weight-normal">Kinshealth</h1>
         <p>Join to find caregivers and nurses, prepare for state licensing exams and get a job.</p>
@@ -31,11 +31,11 @@
           </label>
 
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="jobseeker" value="jobseeker" v-model="user.role" required>
+            <input class="form-check-input" type="radio" name="role" id="jobseeker" value="jobseeker" v-model="user.role.type" required>
             <label class="form-check-label" for="jobseeker">Yes</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="employer" value="employer" v-model="user.role" required>
+            <input class="form-check-input" type="radio" name="role" id="employer" value="employer" v-model="user.role.type" required>
             <label class="form-check-label" for="employer">No</label>
           </div>
           <br>
@@ -84,7 +84,9 @@
 //https://developers.facebook.com/docs/javascript/advanced-setup
 import  {store}  from "../../store/store"
 import {mapGetters} from 'vuex'
-import config from '../../../configuration'
+import config from '../../configuration/index.js'
+
+
 
 export default {
   name: 'signup',
@@ -97,8 +99,11 @@ export default {
         email: "",
         password: "",
         password2: "",
-        role: "",
-        signupmethod: ""        
+        role: {
+            type: '',
+            updated: true
+        },
+        signupmethod: ""    
       },
 
       googleSignInParams: {
@@ -106,7 +111,7 @@ export default {
       },
 
       fbSignInParams: {
-        scope: 'public_profile,email',
+        scope: 'public_profile, email',
         return_scopes: true
       }
     }
@@ -122,8 +127,9 @@ export default {
 
   methods:{
     addUser(){
-      if(this.validUser()){
-          //this.user.signupmethod = "local"
+      if(this.validUser()){    
+
+          this.user.signupmethod = "local"
           this.$store.dispatch('addUser', this.user)
                  
       }      
@@ -171,13 +177,17 @@ export default {
          
       if(this.user.email==""){
         this.signUpErrors['email']= 'Please add your email'
-      }      
+      }   
+      
+      if(this.user.password==""){
+        this.signUpErrors['password']= 'Please enter your password'
+      }
 
       if(this.user.password!==this.user.password2){
         this.signUpErrors['mismatch'] = "Your passwords do not match"
       }
 
-      if(this.user.role==""){
+      if(this.user.role.type==""){
         this.signUpErrors['role']= 'Please select your role'
       } 
 
@@ -188,9 +198,7 @@ export default {
       if(this.signUpErrors.length>0){
         return false
       }else return true
-    }
-
-    
+    }    
   }    
 }
 </script>

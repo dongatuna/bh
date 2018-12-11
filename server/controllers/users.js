@@ -5,13 +5,14 @@ const {JWT_SECRET} = require('../configuration/index')
 signToken = (user) =>{
     return JWT.sign(        
         {
-            iss: "Don",
-            sub: user.id,
+            iss: "Bridge Health",
+            sub: user._id,
             iat: new Date().getTime(), //current time
             exp: new Date().setDate(new Date().getDate()+1), //current time + 1 day ahead
-           // email: user.email,
+            name: user.name,
             //userId: user._id
         },
+
         JWT_SECRET   
     )
 }
@@ -38,12 +39,15 @@ module.exports = {
             //create new user
             const newUser = new User({
                // _id: new mongoose.Types.ObjectId(),
-                role,
-                name,            
+                role :{
+                    type: req.body.role.type,
+                    updated: true
+                },                
+                name,                           
                 signupmethod: "local",
                 local: {
                     email,
-                    password,
+                    password
                 }             
             })
 
@@ -93,18 +97,17 @@ module.exports = {
 
     facebookOAuth: async(req, res, next)=>{
         
-        const userId = req.user._id
-        //const token = signToken(req.user)
-        res.status(200).json({userId})
+        
+        const token = signToken(req.user)
+        res.status(200).json({token})
 
     },
 
     googleOAuth: async(req, res, next) => {
         //Generate token
-        const userId = req.user._id
-        //const token = signToken(req.user)
-        res.status(200).json({userId})
-
+        
+        const token = signToken(req.user)
+        res.status(200).json({token})
     },
 
     updateRole: async(req, res, next) => {
@@ -112,9 +115,9 @@ module.exports = {
 
             console.log("Here are the results...", req.body)
 
-            await User.update({_id:req.body.id}, {role: req.body.role})
+            await User.update({_id:req.body.id}, {name: req.body.name, 'role.type': req.body.role.type, 'role.updated': req.body.role.updated} /*{ updatedAt:  type: Date, default:  Date.now },*/)
 
-            const user = User.findById(req.body.id)
+            const user = await User.findById(req.body.id)
             const token = signToken(user)
             res.status(200).json({token})
 

@@ -108,7 +108,7 @@ export default {
             
             selectedFiles: [],                      
             newEvent: {  
-                userId: this.getUserId || null,                             
+                userId: this.getUserId || null, //this might be an issue                       
                 topic: null,
                 description: null,
                 location: null,

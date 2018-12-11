@@ -1,29 +1,24 @@
-import axios from "axios";
+import axios from "axios"
+import jwt_decode from 'jwt-decode'
 
 //state
 const state = {
     token: localStorage.getItem('access_token') || null,
-    userId: null   
-};
+    user: null      
+}
 //getters
 const getters = {
-    /*
-      in the computed properties in the vue  
-        - sort events by user
-        - get the property length
-    */
+    
     getToken: state => state.token!==null,
-    getUserId: state =>state.userId
-
-  };
+    getUser: state => state.user
+  }
 
 //mutations
 const mutations = {
-    ADD_USER:(state, payload)=>state.token = payload,    
-    REMOVE_USER_TOKEN:(state) => state.token = null,
-    REMOVE_USER_ID: (state) => state.userId = null,
-    SET_USER_ID: (state, payload) => state.userId = payload
-};
+    ADD_TOKEN:(state, payload) => state.token = payload,  
+    ADD_USER:(state, payload) => state.user = payload,  
+    REMOVE_USER_TOKEN:(state) => state.token = null    
+}
 
 //actions
 
@@ -33,7 +28,7 @@ const actions = {
     async addUser(context, payload) {
       
       try {
-        //  debugger
+          debugger
           const response = await axios({
                 method: 'post',
                 url: '/users/signup',
@@ -41,11 +36,12 @@ const actions = {
                 headers:{"Content-Type":"application/json"}
           })
           
-          const token = response.data.access_token
-
+          const token = response.data.token
+          const user = jwt_decode(token)
           localStorage.setItem('access_token', token)          
-  
-          context.commit("ADD_USER", token)
+          context.commit('ADD_TOKEN', token)
+          context.commit('ADD_USER', user)
+       
         
       } catch (error) {
         alert(error);
@@ -63,11 +59,10 @@ const actions = {
           })
           
           const token = response.data.token
-
-          
+          const user = jwt_decode(token)
           localStorage.setItem('access_token', token)          
-          debugger
-          context.commit("ADD_USER", token)
+          context.commit('ADD_TOKEN', token)
+          context.commit('ADD_USER', user)
         
       } catch (error) {
         alert(error);
@@ -87,23 +82,19 @@ const actions = {
           })
           
           const token = response.data.token
-
-          debugger
-          localStorage.setItem('access_token', token)          
-  
-          context.commit("ADD_USER", token)
-        
+          const user = jwt_decode(token)         
+          localStorage.setItem('access_token', token)
+          context.commit('ADD_TOKEN', token)     
+          context.commit('ADD_USER', user)     
       } catch (error) {
-        alert(error);
+        alert(error)
       }
     },
 
-    async destroyToken(context, payload){
-       // axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+    async destroyToken(context){
+       
        localStorage.setItem('access_token', null)
        context.commit('REMOVE_USER_TOKEN')  
-       context.commit('REMOVE_USER_ID')   
-
         await axios({
               method: 'get',
               url: '/users/logout'              
@@ -120,13 +111,16 @@ const actions = {
              headers: { "Content-Type": "application/json" }
            })
 
-           const userId = response.data.userId              
-  
-           context.commit("SET_USER_ID", userId)  
+           const token = response.data.token 
+
+           const user = jwt_decode(token) 
+           localStorage.setItem('access_token', token) 
+           
+           context.commit('ADD_TOKEN', token)
+           context.commit('ADD_USER', user)            
         
-        //context.commit("DELETE_EVENT", response.data);
       } catch (error) {
-        alert(error);
+        alert(error)
       }
     },
 
@@ -139,19 +133,18 @@ const actions = {
 
            debugger
            
-           const userId = response.data.userId              
+           const token = response.data.token             
   
-           context.commit("SET_USER_ID", userId)   
-        
+           const user = jwt_decode(token) 
+           localStorage.setItem('access_token', token) 
+           
+           context.commit('ADD_TOKEN', token)
+           context.commit('ADD_USER', user)    
 
       } catch (error) {
-        alert(error);
+        alert(error)
       }
-    }
-
-    //action for password reset
-
-  
+    } 
    
   }
   
