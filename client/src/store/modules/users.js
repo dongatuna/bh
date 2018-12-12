@@ -4,13 +4,13 @@ import jwt_decode from 'jwt-decode'
 //state
 const state = {
     token: localStorage.getItem('access_token') || null,
-    user: null      
+    user: null   
 }
 //getters
 const getters = {
     
     getToken: state => state.token!==null,
-    getUser: state => state.user
+    getUser: state => state.user!==null,
   }
 
 //mutations
@@ -83,8 +83,10 @@ const actions = {
           })
           
           const token = response.data.token
-          const user = jwt_decode(token)         
+          const user = jwt_decode(token) 
+
           localStorage.setItem('access_token', token)
+
           context.commit('ADD_TOKEN', token)     
           context.commit('ADD_USER', user)     
       } catch (error) {
@@ -116,6 +118,7 @@ const actions = {
            const token = response.data.token 
 
            const user = jwt_decode(token) 
+
            localStorage.setItem('access_token', token) 
            
            debugger

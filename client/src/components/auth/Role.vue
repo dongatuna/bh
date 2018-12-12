@@ -93,11 +93,13 @@ export default {
           if(!this.nameChange()){
             this.user.name = this.getUser.name
           }
-          
+
           this.user._id = this.getUser.sub
           this.$store.dispatch('updateRole', this.user)
 
-          debugger   
+          //got to admin page
+          this.$router.push({path: '/admin'})          
+          
       }      
     },  
 

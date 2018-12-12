@@ -101,7 +101,7 @@ export default {
         password2: "",
         role: {
             type: '',
-            updated: true
+            updated: {type: Boolean, default: false }
         },
         signupmethod: ""    
       },
@@ -119,7 +119,8 @@ export default {
 
   computed: {
     ...mapGetters([
-      "getToken"
+      "getToken",
+      "getUser"
     ])
   },
 
@@ -129,8 +130,11 @@ export default {
     addUser(){
       if(this.validUser()){    
 
+          this.user.role.updated = true
           this.user.signupmethod = "local"
           this.$store.dispatch('addUser', this.user)
+          
+          this.$router.push({path: "/admin"})
                  
       }      
     },
@@ -140,27 +144,35 @@ export default {
       // See https://developers.google.com/identity/sign-in/web/reference#users
       this.userToken = googleUser.Zi.access_token // etc etc
 
-
-      debugger
        this.$store.dispatch('googleSignUp',  this.userToken ) 
-       this.$router.push({path: '/role'})  
+
+       
+       //check to see if the user role is selected -
+      //if role selected go to admin otherwise go to role selection
+       if(getUser.updated){
+          this.$router.push({path: '/admin'})
+       }else this.$router.push({path: '/role'})  
     },
 
     onFBSignInSuccess(response){
       FB.login(user => {
         //console.log("This is the response", response.authResponse.accessToken) 
-          if (response.status === 'connected') {
-                
+          if (response.status === 'connected') {                
 
-            this.userToken = user.authResponse.accessToken
+            this.userToken = user.authResponse.accessToken    
+
+            this.user.role.updated = this.getUser.updated
             debugger
 
             this.$store.dispatch('facebookSignUp',  this.userToken ) 
             
-            this.$router.push({path: '/role'}) 
-            // if(this.getToken){
-            //   this.$router.push({path: '/role'}) 
-            // }
+
+          
+            //check to see if the user role is selected -
+            //if role selected go to admin otherwise go to role selection
+            if(this.user.role.updated){
+                this.$router.push({path: '/admin'})
+            }else this.$router.push({path: '/role'}) 
             
           } else {
               return this.userToken=null

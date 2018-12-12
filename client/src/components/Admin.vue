@@ -13,7 +13,6 @@
                         <li class="list-group-item">Events</li>
                         <li class="list-group-item">Settings</li>                    
                     </ul> 
-
                 </div>
 
                 

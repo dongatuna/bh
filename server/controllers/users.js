@@ -10,7 +10,8 @@ signToken = (user) =>{
             iat: new Date().getTime(), //current time
             exp: new Date().setDate(new Date().getDate()+1), //current time + 1 day ahead
             name: user.name,
-            //userId: user._id
+            role: user.role.type,
+            updated: user.role.updated
         },
 
         JWT_SECRET   
@@ -97,7 +98,8 @@ module.exports = {
 
     facebookOAuth: async(req, res, next)=>{
         
-        
+        console.log(req.user)
+
         const token = signToken(req.user)
         res.status(200).json({token})
 
@@ -105,7 +107,8 @@ module.exports = {
 
     googleOAuth: async(req, res, next) => {
         //Generate token
-        
+        console.log(req.user)
+
         const token = signToken(req.user)
         res.status(200).json({token})
     },
