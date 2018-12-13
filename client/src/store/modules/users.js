@@ -4,7 +4,7 @@ import jwt_decode from 'jwt-decode'
 //state
 const state = {
     token: localStorage.getItem('access_token') || null,
-    user: null   
+    user: {}   
 }
 //getters
 const getters = {
