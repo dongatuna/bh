@@ -39,7 +39,8 @@ const actions = {
           
           const token = response.data.token
           const user = jwt_decode(token)
-          localStorage.setItem('access_token', token)          
+          localStorage.setItem('access_token', token)
+          axios.defaults.headers.common['Authorization'] = token          
           context.commit('ADD_TOKEN', token)
           context.commit('ADD_USER', user)
        
@@ -61,7 +62,8 @@ const actions = {
           
           const token = response.data.token
           const user = jwt_decode(token)
-          localStorage.setItem('access_token', token)          
+          localStorage.setItem('access_token', token)
+          axios.defaults.headers.common['Authorization'] = token          
           context.commit('ADD_TOKEN', token)
           context.commit('ADD_USER', user)
         
@@ -86,6 +88,7 @@ const actions = {
           const user = jwt_decode(token) 
 
           localStorage.setItem('access_token', token)
+          axios.defaults.headers.common['Authorization'] = token
 
           context.commit('ADD_TOKEN', token)     
           context.commit('ADD_USER', user)     
@@ -97,6 +100,7 @@ const actions = {
     async destroyToken(context){
        
        localStorage.setItem('access_token', null)
+       delete axios.defaults.headers.common['Authorization']
        context.commit('REMOVE_USER_TOKEN')  
        context.commit('REMOVE_USER')
         await axios({

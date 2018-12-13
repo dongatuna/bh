@@ -9,9 +9,7 @@ signToken = (user) =>{
             sub: user._id,
             iat: new Date().getTime(), //current time
             exp: new Date().setDate(new Date().getDate()+1), //current time + 1 day ahead
-            name: user.name,
-            role: user.role.type,
-            updated: user.role.updated
+            
         },
 
         JWT_SECRET   
@@ -59,7 +57,7 @@ module.exports = {
             const token = signToken(newUser)
            // console.log(token);
             //Respond with the token
-            res.status(200).json({token})
+            res.status(200).json({auth:true, token, user})
             
         }catch(error){
             res.status(401).json({
@@ -71,10 +69,11 @@ module.exports = {
     signIn: async(req, res, next)=>{
         //The signin is handled by passport.js - 
         console.log('here is the req.user', req.user)
+        const user = req.user
         const token = signToken(req.user)
         //console.log(token);
 
-        res.status(200).json({token})
+        res.status(200).json({auth:true, token, user})
     },
 
     logOut: async(req, res, next)=>{
@@ -98,19 +97,18 @@ module.exports = {
 
     facebookOAuth: async(req, res, next)=>{
         
-        console.log(req.user)
-
+        const user = req.user
         const token = signToken(req.user)
-        res.status(200).json({token})
+        res.status(200).json({token, user})
 
     },
 
     googleOAuth: async(req, res, next) => {
         //Generate token
-        console.log(req.user)
+        const user = (req.user)
 
         const token = signToken(req.user)
-        res.status(200).json({token})
+        res.status(200).json({token, user})
     },
 
     updateRole: async(req, res, next) => {
@@ -127,7 +125,7 @@ module.exports = {
             const user = await User.findById(req.body._id)
             console.log(user)
             const token = signToken(user)
-            res.status(200).json({token})
+            res.status(200).json({auth: true, token, user})
 
         }catch(error){
             res.status(401).json({error})
