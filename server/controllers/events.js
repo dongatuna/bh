@@ -6,57 +6,47 @@ module.exports = {
     
     createEvent: async(req, res, next)=>{
         try{
-            debugger
-            console.log("Here are the req files", req.files)
-            console.log("I am in here and this is request", req.body)
+            
             const {userId, topic, description, location, audience, date, time, cost} = req.body
-
-            debugger
+            
             const eventfiles = []
             req.files.forEach(eventFile=>{
                 eventfiles.push(eventFile.path)
             })
-            debugger
-            console.log("These are the stupid event files...",eventfiles)
-            // const userExists = await User.findById(userId);
-            //console.log("This is the damn eventfiles", eventfiles)
-            // if(userExists.role!=="employer"){
-            //     return res.status(404).json({
-            //         message:"Only organizations and employers can create an event"
-            //     });
-            // }
+            
+            const user = await User.findById(userId)
 
-            const commEvent = new communityEvent({
-                _id: mongoose.Types.ObjectId(),
-                userId,
-                topic,
-                description,
-                location,
-                audience,                
-                date,
-                time,
-                cost, 
-                eventfiles
-            });
+            if(user.role.type==='employer'){
 
-            await commEvent.save();
+                const commEvent = new communityEvent({
+                    _id: mongoose.Types.ObjectId(),
+                    userId,
+                    topic,
+                    description,
+                    location,
+                    audience,                
+                    date,
+                    time,
+                    cost, 
+                    eventfiles
+                })
 
-            res.status(201).json({
-                message: "Here is the event you created",
+                await commEvent.save();
 
-                createdEvent:{
-                    commEvent,
-                    request:{
-                        type: "GET",
-                        url: 'http://localhost:3000/events/'+commEvent._id
-                    }
-                },
-            })           
+                res.status(201).json({ commEvent }) 
+            }else{
+
+                res.status(401).json({
+                    error: "You must be an employer or an organization to create an event"
+                })
+
+                req.logout()
+            }                     
         }catch(error){
             res.status(500).json({
                 message: "There has been an error saving your event",
                 error
-            });
+            })
         }
     },
 
@@ -98,10 +88,7 @@ module.exports = {
         try{            
             const commEvents = await communityEvent.find({}) /*.populate("userId", "name");*/
 
-           // console.log(commEvents)
-
-            //check if allProduct is null
-            if(commEvents <1){
+            if(commEvents.length <1){
                 return res.status(404).json({
                     message: "No communityEvents at this moment"
                 })
@@ -109,17 +96,9 @@ module.exports = {
 
             res.status(200).json({
                 count: commEvents.length,
-                communityEvents: commEvents.map(communityEvent=>{
-                    return{
-                        communityEvent,                        
-                        request: {
-                            type: "GET",
-                            message: "To see more about the event, click on this link",
-                            url: 'http://localhost:3000/events/'+communityEvent._id
-                        }
-                    }
-                })
-            });
+                communityEvents
+            })
+          
 
         }catch(error){
             res.status(500).json({
@@ -133,8 +112,8 @@ module.exports = {
     updateEvent: async(req, res, next)=>{
         
         try{
-            const id = req.params.id;
-            const communityEvent  = await findByIdAndUpdate(id, req.value.body,{new: true});
+            const id = req.params.id
+            const communityEvent  = await findByIdAndUpdate(id, req.value.body,{new: true})
             //console.log and check if communityEvent is ok
             console.log("This is event.ok", communityEvent.ok);
 
@@ -204,8 +183,7 @@ module.exports = {
                     }
                 })
     
-            })
-           
+            })           
             
         }catch(error){
             res.status(500).json({

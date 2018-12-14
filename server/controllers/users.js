@@ -82,14 +82,13 @@ module.exports = {
             req.logout()  
 
             res.status(200).json({
-                message: "You have successfully logged out",
-                loggedOut: true
+                access_token: null
             })            
             
         }catch(error){
             
           res.status(401).json({
-              message:  "There has been an error loggin out",
+              message:  "There has been an error logging out",
               error
             })
         }        

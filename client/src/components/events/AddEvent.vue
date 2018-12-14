@@ -68,6 +68,7 @@
                             <label for="files">Share more about your event</label>
                             <input type="file" multiple class="form-control-file" @change="onFileSelected"  ref="files" id="eventfiles">
                         </div>    
+                            <input hidden type="text" name="userId" id="userId" placeholder="0.00" v-model="userId">
                         <!-- <div class="col-md-6 col-sm-10 mb-3">
                             <ul v-for="(file, index) of files" :key="index" class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">{{file.name}}
@@ -97,18 +98,17 @@ export default {
         ...mapGetters([        
             "getEvent",
             "getFiles",
-            "getUserId"
+            "updatedUser"
         ])      
     }, 
     
     data() {        
         return {     
                
-            errors: [], 
-            
-            selectedFiles: [],                      
-            newEvent: {  
-                userId: this.getUserId || null, //this might be an issue                       
+            errors: [],             
+            selectedFiles: [],                                 
+            newEvent: { 
+                userId: null,  
                 topic: null,
                 description: null,
                 location: null,
@@ -117,7 +117,7 @@ export default {
                 date: null,
                 time:null,                            
             }            
-        };
+        }
     },
 
     methods: {
@@ -139,7 +139,7 @@ export default {
 
         checkForm() {
    
-            this.errors = [];
+            this.errors = []
 
             if (!this.newEvent.topic) {
                 this.errors['topic'] = "Topic of the event is required."
@@ -196,9 +196,9 @@ export default {
             }
             
             debugger
-            this.newEvent.userId = this.getUserId
+            this.newEvent.userId = this.updatedUser._id
 
-            if (this.checkForm()&&this.newEvent!==null) {
+            if (this.checkForm() && this.newEvent!==null) {
                 
                 //add attached files to the file state
                 // if(this.selectedFiles[0].length>0){                    

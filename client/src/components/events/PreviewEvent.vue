@@ -43,7 +43,8 @@ export default {
     computed:{
         ...mapGetters([        
             "getEvent",
-            "getFiles"
+            "getFiles",
+            "updatedUser"
         ])      
     }, 
 

@@ -1,27 +1,44 @@
 import axios from "axios"
-import jwt_decode from 'jwt-decode'
+//import jwt_decode from 'jwt-decode'
 
 //state
 const state = {
+    role: "",
+    updatedRole: false,
     token: localStorage.getItem('access_token') || null,
     user: {}   
 }
 //getters
 const getters = {
     
-    getToken: state => state.token!==null,
-    getUser: state => state.user!==null,
+    //getToken: state => state.token!==null,
+    isLoggedIn: state => !!state.token,
+    updatedUser: state => {
+      if(state.user !== null && state.user.role.updated){
+        return state.user
+      }
+    },
+    
+    getUser: state => state.user !== null
+    //getRole: state =>state.user.role.type,
+
   }
 
 //mutations
 const mutations = {
-    ADD_TOKEN:(state, payload) => state.token = payload,  
-    ADD_USER:(state, payload) => state.user = payload,  
-    REMOVE_USER_TOKEN:(state) => state.token = null,    
-    REMOVE_USER:(state) => state.user = null  
+    //Add user and token  
+    ADD_USER(state, payload){
+      //state.status = 'success'
+      state.user = payload.user,
+      state.token = payload.token
+    },  
+   // Remove user and token    
+    REMOVE_USER(state){
+      //state.status = ''
+      state.user = null,
+      state.token = null
+    }   
 }
-
-//actions
 
 
 const actions = {
@@ -37,16 +54,14 @@ const actions = {
                 headers:{"Content-Type":"application/json"}
           })
           
-          const token = response.data.token
-          const user = jwt_decode(token)
-          localStorage.setItem('access_token', token)
-          axios.defaults.headers.common['Authorization'] = token          
-          context.commit('ADD_TOKEN', token)
-          context.commit('ADD_USER', user)
-       
+          const payload = response.data          
+          localStorage.setItem('access_token', payload.token)
+          axios.defaults.headers.common['Authorization'] = payload.token            
+          context.commit('ADD_USER', payload)       
         
       } catch (error) {
-        alert(error);
+        alert(error)
+        localStorage.removeItem('access_token')
       }
     },
 
@@ -60,15 +75,14 @@ const actions = {
               headers:{"Content-Type":"application/json"}
           })
           
-          const token = response.data.token
-          const user = jwt_decode(token)
-          localStorage.setItem('access_token', token)
-          axios.defaults.headers.common['Authorization'] = token          
-          context.commit('ADD_TOKEN', token)
-          context.commit('ADD_USER', user)
+          const payload = response.data          
+          localStorage.setItem('access_token', payload.token)
+          axios.defaults.headers.common['Authorization'] = payload.token            
+          context.commit('ADD_USER', payload)  
         
       } catch (error) {
-        alert(error);
+        alert(error)
+        localStorage.removeItem('access_token')
       }
 
     },
@@ -84,31 +98,27 @@ const actions = {
                 headers:{"Content-Type":"application/json"}
           })
           
-          const token = response.data.token
-          const user = jwt_decode(token) 
+          const payload = response.data          
+          localStorage.setItem('access_token', payload.token)
+          axios.defaults.headers.common['Authorization'] = payload.token            
+          context.commit('ADD_USER', payload)  
 
-          localStorage.setItem('access_token', token)
-          axios.defaults.headers.common['Authorization'] = token
-
-          context.commit('ADD_TOKEN', token)     
-          context.commit('ADD_USER', user)     
       } catch (error) {
         alert(error)
+        localStorage.removeItem('access_token')
       }
     },
 
     async destroyToken(context){
        
-       localStorage.setItem('access_token', null)
+      localStorage.removeItem('access_token')
        delete axios.defaults.headers.common['Authorization']
-       context.commit('REMOVE_USER_TOKEN')  
+       
        context.commit('REMOVE_USER')
         await axios({
               method: 'get',
               url: '/users/logout'              
-        })        
-       
-             
+        })                   
     },
   
      
@@ -119,18 +129,14 @@ const actions = {
              headers: { "Content-Type": "application/json" }
            })
 
-           const token = response.data.token 
-
-           const user = jwt_decode(token) 
-
-           localStorage.setItem('access_token', token) 
-           
-           debugger
-           context.commit('ADD_TOKEN', token)
-           context.commit('ADD_USER', user)            
+           const payload = response.data          
+           localStorage.setItem('access_token', payload.token)
+           axios.defaults.headers.common['Authorization'] = payload.token            
+           context.commit('ADD_USER', payload)            
         
       } catch (error) {
         alert(error)
+        localStorage.removeItem('access_token')
       }
     },
 
@@ -139,21 +145,16 @@ const actions = {
            const response = await axios.post("/users/auth/google", {
              access_token: payload,
              headers: { "Content-Type": "application/json" }
-           })
-
+           })           
            
-           
-           const token = response.data.token             
-  
-           const user = jwt_decode(token) 
-           localStorage.setItem('access_token', token) 
-           
-           context.commit('ADD_TOKEN', token)
-           debugger
-           context.commit('ADD_USER', user)    
+          const payload = response.data          
+          localStorage.setItem('access_token', payload.token)
+          axios.defaults.headers.common['Authorization'] = payload.token            
+          context.commit('ADD_USER', payload)   
 
       } catch (error) {
         alert(error)
+        localStorage.removeItem('access_token')
       }
     } 
    

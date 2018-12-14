@@ -119,8 +119,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      "getToken",
-      "getUser"
+       "getUser"
     ])
   },
 
@@ -164,8 +163,7 @@ export default {
             this.user.role.updated = this.getUser.updated
             debugger
 
-            this.$store.dispatch('facebookSignUp',  this.userToken ) 
-            
+            this.$store.dispatch('facebookSignUp',  this.userToken )         
 
           
             //check to see if the user role is selected -

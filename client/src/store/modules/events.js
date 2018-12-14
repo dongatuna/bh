@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios from "axios"
 
 const state = {
-  //apiUrl: "http://localhost:3000",
+  
   events: [],
   eventfiles:[],
   event: {}
@@ -85,7 +85,7 @@ const actions = {
 
   async deleteDBEvent(context, payload) {
     try {
-      const response = await axios.delete("/events/"+payload)
+      const response = await axios.delete(`/events/${payload}`)
 
       
       //context.commit("DELETE_EVENT", response.data);
