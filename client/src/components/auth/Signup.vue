@@ -126,6 +126,13 @@ export default {
   
 
   methods:{
+
+    beforeRouteLeave: (to, from, next)=>{
+        if(this.getUser.role.updated){
+            next('/admin')
+        }else next('/role')
+    },
+
     addUser(){
       if(this.validUser()){    
 
