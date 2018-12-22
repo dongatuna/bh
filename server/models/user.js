@@ -12,7 +12,11 @@ const userSchema = mongoose.Schema({
          //required: true
     },   
 
-    name:String, 
+    name:{type: String},
+
+    preference: {type: Array, default: ['email']},
+
+    telephone: String,
 
     signupmethod: {
         type: String,
@@ -67,9 +71,10 @@ userSchema.pre('save', async function(next){
 
         next();
     }catch(error){
-        next(error);
+        next(error)
     }
-});
+})
+
 //this method is used to verify the password user 
 userSchema.methods.validPassword = async function(newPassword){
     try{
@@ -81,4 +86,4 @@ userSchema.methods.validPassword = async function(newPassword){
     }
 }
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', userSchema)

@@ -9,11 +9,10 @@ const User = require("./models/user")
 const config = require('./configuration/index.js')
 
 //JSON WEB TOKENS STRATEGY
-
 passport.use(new JwtStrategy({
     jwtFromRequest: ExtractJwt.fromHeader('authorization'),
     secretOrKey: config.JWT_SECRET
-},  async(payload, done)=>{
+},  async(payload, done) => {
     try{
 
         //find the user specified in the token

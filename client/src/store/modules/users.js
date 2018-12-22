@@ -46,7 +46,7 @@ const actions = {
     async addUser(context, payload) {
       
       try {
-          debugger
+          
           const response = await axios({
                 method: 'post',
                 url: '/users/signup',
@@ -54,9 +54,9 @@ const actions = {
                 headers:{"Content-Type":"application/json"}
           })
           
-          const payload = response.data          
-          localStorage.setItem('access_token', payload.token)
-          axios.defaults.headers.common['Authorization'] = payload.token            
+          const user = response.data          
+          localStorage.setItem('access_token', user.token)
+          axios.defaults.headers.common['Authorization'] = user.token            
           context.commit('ADD_USER', payload)       
         
       } catch (error) {
@@ -87,15 +87,15 @@ const actions = {
 
     },
 
-    async logInUser(context, payload) {
+    async loginUser(context, payload) {
       
       try {
         //  debugger
           const response = await axios({
-                method: 'post',
-                url: '/users/signin',
-                data: payload,
-                headers:{"Content-Type":"application/json"}
+              method: 'post',
+              url: '/users/signin',
+              data: payload,
+              headers:{"Content-Type":"application/json"}
           })
           
           const payload = response.data          

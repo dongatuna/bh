@@ -28,6 +28,7 @@ module.exports = {
                 type: Joi.string().required(),
                 updated: Joi.boolean().required()
             },
+            signupmethod: Joi.string().required(),
             name: Joi.string().allow("").optional(),
             email: Joi.string().email({ minDomainAtoms: 2 }).required(),
             password: Joi.string(),
@@ -77,8 +78,6 @@ module.exports = {
             question:  Joi.string().required(),
             rationale:  Joi.string().required()
                    
-        }),
-    
-
+        })
     }
 }

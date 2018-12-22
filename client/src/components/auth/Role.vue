@@ -7,8 +7,7 @@
       <form class="form-signin" role="form" v-on:submit.prevent="updateRole">
         <div class="text-center mb-4">        
         <h5>Please provide the following information </h5>       
-      </div>
-     
+      </div>     
 
        <div class="form-group">
         
@@ -31,7 +30,32 @@
           <div class="form-label-group">
             <input type="text" class="form-control" placeholder="Preferred Name" v-on:change="nameChange()" name="username" id="username" v-model="getUser.name" required>
             <label for="name">Enter preferred name</label>
-          </div>     
+          </div>   
+          
+          <div class="form-label-group">
+            <input type="tel" class="form-control" placeholder="Enter Phone Number" name="tel" id="tel" v-model="user.telephone" required>
+            <label for="name">Enter Phone Number</label>
+          </div>
+          <p><small>Enter your number in this 123-456-7890. </small></p>  
+
+          <div>
+            <p>Receive notifications about potential job opening matches through: </p>
+          </div>
+
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="email" value="email" v-model="user.preference">
+            <label class="form-check-label" for="email">Email</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="text" value="text" v-model="user.preference">
+            <label class="form-check-label" for="text">Text</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="voice" value="voice" v-model="user.preference">
+            <label class="form-check-label" for="voice">Voice</label>
+          </div>
+
+                            
       </div>
     
       <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Save</button>
@@ -40,12 +64,7 @@
            
       <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2018</p>
     </div> 
-      
-
-    <!-- form to start here -->
-
-      
-  
+ 
 </section>
     
 </template>
@@ -70,17 +89,29 @@ export default {
       signUpErrors:[],
       user:{ 
         _id: {type: String},
+        preference: {
+          type: Array,
+          default: ['email'], 
+          enum: ['email', 'text', 'voice']
+        },
         role: {
           type: {type: String, default: 'jobseeker', enum: ['jobseeker', 'employer']} , 
           updated: {type: Boolean, default: false }
         },        
 
+        telephone:  String,
         name: {type: String } 
       }      
     }
   },
 
   methods:{
+
+    validateTel(tel){
+      let tel_number = /^(\+0?1\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/
+      return tel_number.test(tel)
+    },
+
     nameChange(){
       return this.user.name = document.getElementById("username").value
     },
@@ -105,9 +136,17 @@ export default {
 
     validUser(){     
 
-      if(this.role==""){
+      if(this.user.role==""){
         this.signUpErrors['role'] = 'Please select your role'
       } 
+
+      if(this.user.preference.length===0){
+        this.signUpErrors['preference'] = 'You must select one way to receive notification'
+      }
+
+      if(!this.validateTel(this.user.tel)){
+        this.signUpErrors['tel'] = 'Please enter your phone number n the correct format'
+      }
 
       if(this.signUpErrors.length>0){
         return false

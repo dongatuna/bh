@@ -20,7 +20,7 @@ module.exports = {
     signUp: async(req, res, next)=>{
         try{
 
-            console.log('console log req value...', req.body)
+            console.log('console log req value...', req)
             const { role, name, email, password } = req.body
 
 
