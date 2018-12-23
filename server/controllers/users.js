@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const User = require('../models/user')
 const JWT = require('jsonwebtoken')
 const {JWT_SECRET} = require('../configuration/index')
@@ -20,13 +21,13 @@ module.exports = {
     signUp: async(req, res, next)=>{
         try{
 
-            console.log('console log req value...', req)
-            const { role, name, email, password } = req.body
+            console.log('console log req value...', req.body)
+            const { name, role, email, password, signupmethod, preferences, telephone } = req.body
 
-
+            console.log("This is the name", name, "email", email, "password", password, "sign up method", signupmethod)
             //check if the user exists
             const result = await User.findOne({email})
-
+            console.log("This is the role type....", req.body.role.type)
             console.log("The results is", result)
             
             if(result){
@@ -34,21 +35,24 @@ module.exports = {
                     message: "The email has been taken"
                 })
             }
+            console.log("Just before saving user")
 
             //create new user
             const newUser = new User({
-               // _id: new mongoose.Types.ObjectId(),
-                role :{
+                _id: new mongoose.Types.ObjectId(),
+                name,  
+                role: {
                     type: req.body.role.type,
-                    updated: true
-                },                
-                name,                           
-                signupmethod: "local",
+                    updated: req.body.role.updated
+                },                          
+                signupmethod,
                 local: {
                     email,
                     password
-                }             
-            })
+                }, 
+                preferences,    
+                telephone   
+            })            
 
             console.log("The new user is: ",newUser)
             await newUser.save()
@@ -57,11 +61,13 @@ module.exports = {
             const token = signToken(newUser)
            // console.log(token);
             //Respond with the token
-            res.status(200).json({auth:true, token, user})
+            res.status(200).json({auth:false, token, newUser})
             
         }catch(error){
+            console.log(error)
             res.status(401).json({
-                message: "Authentication failed"
+                message: "Authentication failed",
+                error
             })
         }
     },    
@@ -119,9 +125,16 @@ module.exports = {
             console.log("Here is the type", req.body.role.type)
             console.log("Here is the updated", req.body.role.updated)
 
-            await User.update({_id:req.body._id}, {name: req.body.name, 'role.type': req.body.role.type, 'role.updated': req.body.role.updated} /*{ updatedAt:  type: Date, default:  Date.now },*/)
+            await User.update({_id:req.body._id}, {
+                name: req.body.name, 
+                telephone: req.body.telephone, 
+                preferences: req.body.preference, 
+                'role.type': req.body.role.type, 
+                'role.updated': req.body.role.updated
+            } /*{ updatedAt:  type: Date, default:  Date.now },*/)
 
-            const user = await User.findById(req.body._id)
+            const user = await User.findById(req.body._id)          
+            
             console.log(user)
             const token = signToken(user)
             res.status(200).json({auth: true, token, user})

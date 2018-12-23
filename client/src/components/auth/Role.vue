@@ -1,7 +1,6 @@
 <template >
 
 <section>
-
  
     <div class="container mt-5 col-sm-10 col-md-6 col-lg-4 p-5"> 
       <form class="form-signin" role="form" v-on:submit.prevent="updateRole">
@@ -11,24 +10,27 @@
 
        <div class="form-group">
         
-          <label class="form-check-label" for="role">
-            <span class="text-danger"><strong>Looking for work?</strong> </span>
-          </label>
+          <div class=" bg-muted d-flex justify-content-around">
+            <label class="form-check-label" for="role">
+              <span class="text-danger"><strong>Looking for work?</strong> </span>
+            </label>
 
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="jobseeker" value="jobseeker" v-model="user.role.type" required>
-            <label class="form-check-label" for="jobseeker">Yes</label>
-          </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="role" id="jobseeker" value="jobseeker" v-model="user.role.type" required>
+              <label class="form-check-label" for="jobseeker">Yes</label>
+            </div>
 
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="employer" value="employer" v-model="user.role.type" required>
-            <label class="form-check-label" for="employer">No</label>
-          </div>
-          <br>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="role" id="employer" value="employer" v-model="user.role.type" required>
+              <label class="form-check-label" for="employer">No</label>
+            </div>
+
+          </div>          
+         
         <p><small>Employers and organizations should check "No". </small></p>
         <hr>
-          <div class="form-label-group">
-            <input type="text" class="form-control" placeholder="Preferred Name" v-on:change="nameChange()" name="username" id="username" v-model="getUser.name" required>
+          <div v-if="getUser.signupmethod!=='local'" class="form-label-group">
+            <input type="text" class="form-control" placeholder="Username" v-on:change="nameChange()" name="username" id="username" v-model="getUser.name" required>
             <label for="name">Enter preferred name</label>
           </div>   
           
@@ -43,15 +45,15 @@
           </div>
 
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="email" value="email" v-model="user.preference">
+            <input class="form-check-input" type="checkbox" id="email" value="email" v-model="user.preferences">
             <label class="form-check-label" for="email">Email</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="text" value="text" v-model="user.preference">
+            <input class="form-check-input" type="checkbox" id="text" value="text" v-model="user.preferences">
             <label class="form-check-label" for="text">Text</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="voice" value="voice" v-model="user.preference">
+            <input class="form-check-input" type="checkbox" id="voice" value="voice" v-model="user.preferences">
             <label class="form-check-label" for="voice">Voice</label>
           </div>
 
@@ -89,17 +91,13 @@ export default {
       signUpErrors:[],
       user:{ 
         _id: {type: String},
-        preference: {
-          type: Array,
-          default: ['email'], 
-          enum: ['email', 'text', 'voice']
-        },
+        preferences: [],
         role: {
-          type: {type: String, default: 'jobseeker', enum: ['jobseeker', 'employer']} , 
+          type: {type: String, enum: ['jobseeker', 'employer']}, 
           updated: {type: Boolean, default: false }
         },        
 
-        telephone:  String,
+        telephone:  {type: String, required: true},
         name: {type: String } 
       }      
     }

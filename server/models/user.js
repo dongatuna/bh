@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 
 const userSchema = mongoose.Schema({
     
-    //_id: mongoose.Schema.Types.ObjectId,
+    _id: mongoose.Schema.Types.ObjectId,
     createdAt: { type: Date, default: Date.now },
 
     role: {
@@ -14,21 +14,21 @@ const userSchema = mongoose.Schema({
 
     name:{type: String},
 
-    preference: {type: Array, default: ['email']},
-
-    telephone: String,
+    preferences: {type: Array /*, default: ['email']*/},
 
     signupmethod: {
         type: String,
         enum: ['facebook', 'google', 'local'],
         required: true
     },
+
+    telephone: {type: String},    
     
     facebook: {
         id:{
             type: String,
         },
-        email: {type: String, lowercase:true}
+        email: {type: String, lowercase: true}
     },
 
     google: {
@@ -58,18 +58,18 @@ userSchema.pre('save', async function(next){
         console.log("The user is here...")
         //check if the signup method is local
         if(this.signupmethod!=='local'){
-            next();
+            next()
         }
         
         //create salt
-        const salt = await bcrypt.genSalt(10);
+        const salt = await bcrypt.genSalt(10)
         //use bcrypt hash
 
-        const passwordHash = await bcrypt.hash(this.local.password, salt);
+        const passwordHash = await bcrypt.hash(this.local.password, salt)
 
-        this.local.password = passwordHash;
+        this.local.password = passwordHash
 
-        next();
+        next()
     }catch(error){
         next(error)
     }
@@ -79,11 +79,12 @@ userSchema.pre('save', async function(next){
 userSchema.methods.validPassword = async function(newPassword){
     try{
         //find the user using email provided
-        return await bcrypt.compare(newPassword, this.local.password);
+        return await bcrypt.compare(newPassword, this.local.password)
         //use the bcrypt compare method
     }catch(error){
-        throw new Error(error);
+        throw new Error(error)
     }
 }
+
 
 module.exports = mongoose.model('User', userSchema)

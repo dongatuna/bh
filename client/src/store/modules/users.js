@@ -15,6 +15,7 @@ const getters = {
     isLoggedIn: state => !!state.token,
     updatedUser: state => {
       if(state.user !== null && state.user.role.updated){
+        state.updateRole = true
         return state.user
       }
     },
@@ -27,10 +28,10 @@ const getters = {
 //mutations
 const mutations = {
     //Add user and token  
-    ADD_USER(state, payload){
+    ADD_USER(state, payload, token){
       //state.status = 'success'
-      state.user = payload.user,
-      state.token = payload.token
+      state.user = payload,
+      state.token = token
     },  
    // Remove user and token    
     REMOVE_USER(state){
@@ -54,10 +55,11 @@ const actions = {
                 headers:{"Content-Type":"application/json"}
           })
           
-          const user = response.data          
-          localStorage.setItem('access_token', user.token)
-          axios.defaults.headers.common['Authorization'] = user.token            
-          context.commit('ADD_USER', payload)       
+          const {auth, newUser, token} = response.data    
+          debugger      
+          localStorage.setItem('access_token', token)
+          axios.defaults.headers.common['Authorization'] = token            
+          context.commit('ADD_USER', newUser, token)       
         
       } catch (error) {
         alert(error)

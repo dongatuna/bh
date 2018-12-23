@@ -35,10 +35,6 @@ module.exports = {
             
         }),
 
-        roleSchema: Joi.object().keys({
-            role: Joi.string().required()            
-        }),
-
         CVSchema: Joi.object().keys({
             userId: Joi.string().alphanum().required(),
             license:  Joi.string().required(),

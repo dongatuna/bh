@@ -12,7 +12,7 @@
         <h3 class="h3 mb-3 font-weight-normal">Login</h3>                 
       </div>
 
-      <form v-if="signup" class="form-signin" v-on:submit.prevent="addUser">   
+      <form v-if="signup" class="form-signin" v-on:submit.prevent="addUser()">   
 
         <div class="mb-2 form-label-group">
           <input type="email" class="form-control" placeholder="Email address" v-model="user.email" autofocus required>
@@ -38,7 +38,7 @@
 
       </form>
 
-      <form v-else class="form-signin" v-on:submit.prevent="loginUser">
+      <form v-else class="form-signin" v-on:submit.prevent="loginUser()">
 
         <div class="mb-2 form-label-group" >
           <input type="email" class="form-control" placeholder="Email address" v-model="returningUser.email" autofocus required>
@@ -107,12 +107,13 @@ export default {
         password: "",
         password2: "",
         role: {
-            type: '',
+            type:  "" ,
             updated: {type: Boolean, default: false }
         },
         signupmethod: "",
-        tel: "",
-        preference: [],    
+        telephone: "",
+        preferences: [], 
+           
       },
 
       googleSignInParams: {
@@ -137,11 +138,16 @@ export default {
     addUser(){
       if(this.validUser()){    
 
-          this.user.role.updated = false
+          this.user.preferences[0] = 'email',
+          this.user.telephone = '555-555-5555'
+          this.user.role = {
+            type: "jobseeker",
+            updated: false            
+          } 
           this.user.signupmethod = "local"
           debugger
           this.$store.dispatch('addUser', this.user)          
-          //this.$router.push({path: "/role"})                 
+          this.$router.push({path: "/role"})                 
       }      
     },
 
