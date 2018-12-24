@@ -9,10 +9,8 @@ signToken = (user) =>{
             iss: "Bridge Health",
             sub: user._id,
             iat: new Date().getTime(), //current time
-            exp: new Date().setDate(new Date().getDate()+1), //current time + 1 day ahead
-            
+            exp: new Date().setDate(new Date().getDate()+1), //current time + 1 day ahead            
         },
-
         JWT_SECRET   
     )
 }
@@ -35,7 +33,6 @@ module.exports = {
                     message: "The email has been taken"
                 })
             }
-            console.log("Just before saving user")
 
             //create new user
             const newUser = new User({
@@ -54,14 +51,9 @@ module.exports = {
                 telephone   
             })            
 
-            console.log("The new user is: ",newUser)
             await newUser.save()
  
-            //Generate the token
-            const token = signToken(newUser)
-           // console.log(token);
-            //Respond with the token
-            res.status(200).json({auth:false, token, newUser})
+            res.status(200).json({newUser})
             
         }catch(error){
             console.log(error)
@@ -76,10 +68,16 @@ module.exports = {
         //The signin is handled by passport.js - 
         console.log('here is the req.user', req.user)
         const user = req.user
-        const token = signToken(req.user)
-        //console.log(token);
 
-        res.status(200).json({auth:true, token, user})
+        if(user.role.updated){
+            const token = signToken(req.user)
+            const data = {
+                user, token, auth: true
+            }
+            res.status(200).json({data})
+        }
+        
+        res.status(200).json({user})        
     },
 
     logOut: async(req, res, next)=>{
@@ -103,17 +101,30 @@ module.exports = {
     facebookOAuth: async(req, res, next)=>{
         
         const user = req.user
-        const token = signToken(req.user)
-        res.status(200).json({token, user})
+        if(user.role.updated){
+            const token = signToken(user)
+            const data = {
+                user, token, auth: true
+            }
+            res.status(200).json({data})
+        }
+        
+        res.status(200).json({user})
 
     },
 
     googleOAuth: async(req, res, next) => {
         //Generate token
-        const user = (req.user)
-
-        const token = signToken(req.user)
-        res.status(200).json({token, user})
+        const user = req.user
+        if(user.role.updated){
+            const token = signToken(user)
+            const data = {
+                user, token, auth: true
+            }
+            res.status(200).json({data})
+        }
+        
+        res.status(200).json({user})
     },
 
     updateRole: async(req, res, next) => {
@@ -135,9 +146,14 @@ module.exports = {
 
             const user = await User.findById(req.body._id)          
             
-            console.log(user)
             const token = signToken(user)
-            res.status(200).json({auth: true, token, user})
+
+            const data = {
+                user,
+                token,
+                auth: true
+            }
+            res.status(200).json({data})
 
         }catch(error){
             res.status(401).json({error})

@@ -27,37 +27,38 @@
 
           </div>          
          
-        <p><small>Employers and organizations should check "No". </small></p>
-        <hr>
-          <div v-if="getUser.signupmethod!=='local'" class="form-label-group">
+        <p><small><strong>Employers and organizations check "No". </strong></small></p>
+        
+          <div v-if="this.getUser.signupmethod!=='local'" class="form-label-group">
             <input type="text" class="form-control" placeholder="Username" v-on:change="nameChange()" name="username" id="username" v-model="getUser.name" required>
             <label for="name">Enter preferred name</label>
           </div>   
           
           <div class="form-label-group">
-            <input type="tel" class="form-control" placeholder="Enter Phone Number" name="tel" id="tel" v-model="user.telephone" required>
+            <input type="text" class="form-control" placeholder="Enter Phone Number" name="telephone" id="telephone" v-model="user.telephone" required>
             <label for="name">Enter Phone Number</label>
           </div>
-          <p><small>Enter your number in this 123-456-7890. </small></p>  
+          <p><small><strong>Enter your number in this format: 123-456-7890. </strong></small></p>  
 
           <div>
             <p>Receive notifications about potential job opening matches through: </p>
           </div>
 
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="email" value="email" v-model="user.preferences">
-            <label class="form-check-label" for="email">Email</label>
+          <div class="d-flex justify-content-between">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="email" value="email" v-model="user.preferences">
+              <label class="form-check-label" for="email">Email</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="text" value="text" v-model="user.preferences">
+              <label class="form-check-label" for="text">Text</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="voice" value="voice" v-model="user.preferences">
+              <label class="form-check-label" for="voice">Voice</label>
+            </div>
           </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="text" value="text" v-model="user.preferences">
-            <label class="form-check-label" for="text">Text</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="voice" value="voice" v-model="user.preferences">
-            <label class="form-check-label" for="voice">Voice</label>
-          </div>
-
-                            
+                                      
       </div>
     
       <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Save</button>
@@ -97,7 +98,7 @@ export default {
           updated: {type: Boolean, default: false }
         },        
 
-        telephone:  {type: String, required: true},
+        telephone: '',// {type: String, required: true},
         name: {type: String } 
       }      
     }
@@ -124,6 +125,7 @@ export default {
           }
 
           this.user._id = this.getUser.sub
+          debugger
           this.$store.dispatch('updateRole', this.user)
 
           //got to admin page

@@ -88,8 +88,6 @@ import  {store}  from "../../store/store"
 import {mapGetters} from 'vuex'
 import config from '../../configuration/index.js'
 
-
-
 export default {
   props: ['signup'],
   name: 'signup',
@@ -167,7 +165,8 @@ export default {
           // this.$store.dispatch('googleSignUp',  this.userToken ) 
           // this.$router.push({path: '/admin'})
        
-          this.userToken = googleUser.Zi.access_token // etc etc
+          this.userToken = googleUser.Zi.access_token 
+          debugger
           this.$store.dispatch('googleSignUp',  this.userToken ) 
           this.$router.push({path: '/role'}) 
         
@@ -184,7 +183,8 @@ export default {
             //   this.$router.push({path: '/admin'})
             
 
-              this.userToken = user.authResponse.accessToken                           
+              this.userToken = user.authResponse.accessToken       
+              debugger                    
               this.$store.dispatch('facebookSignUp',  this.userToken )  
               this.$router.push({path: '/role'})
 

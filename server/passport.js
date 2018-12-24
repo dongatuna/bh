@@ -86,14 +86,21 @@ passport.use('googleToken', new GooglePlusTokenStrategy({
             google:{
                 id: profile.id,
                 email: profile.emails[0].value
-            }
-        });
+            },
+            role: {
+                type: "req.body.role.type",
+                updated: false
+            },  
+            preferences: ['email'],    
+            telephone: '333-333-3333'  
+        })
         
-        await newUser.save();
-        done(null, newUser);
+        await newUser.save()
+        done(null, newUser)
 
     }catch(error){
-        done(error, false, error.message);
+        console.log(error)
+        done(error, false, error.message)
     }    
 }))
 
@@ -122,15 +129,22 @@ passport.use("facebookToken", new FacebookTokenStrategy({
             facebook:{
                 id: profile.id,
                 email: profile.emails[0].value
-            }        
+            },
+            role: {
+                type: "req.body.role.type",
+                updated: false
+            },  
+            preferences: ['email'],    
+            telephone: '333-333-3333'       
         })
 
         console.log("This is a new user ", newUser);
         //save the newly created user and return him 
-        await newUser.save();
-        done(null, newUser);
+        await newUser.save()
+        done(null, newUser)
 
     }catch(error){
+        console.log(error)
         done(error, false, error.message);
     }
 
