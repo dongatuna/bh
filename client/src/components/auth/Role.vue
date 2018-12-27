@@ -3,7 +3,7 @@
 <section>
  
     <div class="container mt-5 col-sm-10 col-md-6 col-lg-4 p-5"> 
-      <form class="form-signin" role="form" v-on:submit.prevent="updateRole">
+      <form class="form-signin" role="form" v-on:submit.prevent = "updateRole()">
         <div class="text-center mb-4">        
         <h5>Please provide the following information </h5>       
       </div>     
@@ -29,8 +29,8 @@
          
         <p><small><strong>Employers and organizations check "No". </strong></small></p>
         
-          <div v-if="this.getUser.signupmethod!=='local'" class="form-label-group">
-            <input type="text" class="form-control" placeholder="Username" v-on:change="nameChange()" name="username" id="username" v-model="getUser.name" required>
+          <div class="form-label-group">
+            <input type="text" class="form-control" placeholder="Username" v-on:change = "nameChange()" name="username" id="username" v-model="getUser.name" required>
             <label for="name">Enter preferred name</label>
           </div>   
           
@@ -77,14 +77,13 @@
 //IMPORTANT RESOURCE: https://stackoverflow.com/questions/1519006/how-do-you-create-a-remote-git-branch
 
 import { store } from "../../store/store"
-import {mapGetters} from 'vuex'
-
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'userRole', 
 
   computed:{
-    ...mapGetters([ "getUser"])  
+    ...mapGetters([ "getUser" ])  
   },
 
   data(){
@@ -97,9 +96,8 @@ export default {
           type: {type: String, enum: ['jobseeker', 'employer']}, 
           updated: {type: Boolean, default: false }
         },        
-
-        telephone: '',// {type: String, required: true},
-        name: {type: String } 
+        telephone: "",// {type: String, required: true},
+        username: "" //{type: String } 
       }      
     }
   },
@@ -124,7 +122,7 @@ export default {
             this.user.name = this.getUser.name
           }
 
-          this.user._id = this.getUser.sub
+          this.user._id = this.getUser._id
           debugger
           this.$store.dispatch('updateRole', this.user)
 
@@ -140,11 +138,11 @@ export default {
         this.signUpErrors['role'] = 'Please select your role'
       } 
 
-      if(this.user.preference.length===0){
+      if(this.user.preferences.length===0){
         this.signUpErrors['preference'] = 'You must select one way to receive notification'
       }
 
-      if(!this.validateTel(this.user.tel)){
+      if(!this.validateTel(this.user.telephone)){
         this.signUpErrors['tel'] = 'Please enter your phone number n the correct format'
       }
 

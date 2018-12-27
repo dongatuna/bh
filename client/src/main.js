@@ -43,7 +43,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if(to.matched.some(record => record.meta.requiresEmployerAuth)) {
-    if (store.getters.isLoggedIn && store.getters.updatedUser.role.type==='employer') {
+    if (store.getters.isLoggedIn && store.getters.isEmployer) {
       next()
       return
     }
@@ -55,7 +55,7 @@ router.beforeEach((to, from, next) => {
 
 router.beforeEach((to, from, next) => {
   if(to.matched.some(record => record.meta.requiresJobseekerAuth)) {
-    if (store.getters.isLoggedIn && store.getters.updatedUser.role.type==='jobseeker') {
+    if (store.getters.isLoggedIn && store.getters.isJobSeeker) {
       next()
       return
     }
@@ -65,13 +65,25 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+// router.beforeEach((to, from, next) => {
+//   if(to.matched.some(record => record.meta.requiresAuth)) {
+//     if (store.getters.isLoggedIn && store.getters.updatedUser) {
+//       next()
+//       return
+//     }
+//     next('/login') 
+//   } else {
+//     next() 
+//   }
+// })
+
 router.beforeEach((to, from, next) => {
   if(to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.isLoggedIn && store.getters.updatedUser) {
+    if (store.getters.isLoggedIn ) {
       next()
       return
     }
-    next('/login') 
+    next('/signup') 
   } else {
     next() 
   }

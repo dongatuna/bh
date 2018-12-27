@@ -36,7 +36,7 @@ passport.use(new JwtStrategy({
 
 passport.use(new LocalStrategy({
     usernameField: "email"
-}, async(email, password, done )=>{
+}, async(email, password, done ) => {
     try{
         //Find the user given the email
         const user = await User.findOne({"local.email": email})
@@ -80,7 +80,7 @@ passport.use('googleToken', new GooglePlusTokenStrategy({
         }
 
         const newUser = new User({
-            _id: new mongoose.Types.ObjectId(),
+           // _id: new mongoose.Types.ObjectId(),
             signupmethod: 'google',
             name: profile.displayName,
             google:{
@@ -88,7 +88,7 @@ passport.use('googleToken', new GooglePlusTokenStrategy({
                 email: profile.emails[0].value
             },
             role: {
-                type: "req.body.role.type",
+                type: "jobseeker",
                 updated: false
             },  
             preferences: ['email'],    
@@ -123,7 +123,7 @@ passport.use("facebookToken", new FacebookTokenStrategy({
 
         //otherwise, create a new user
         const newUser = new User({
-            _id: new mongoose.Types.ObjectId(),
+            //_id: new mongoose.Types.ObjectId(),
             signupmethod: 'facebook',
             name: profile.displayName,
             facebook:{
@@ -131,7 +131,7 @@ passport.use("facebookToken", new FacebookTokenStrategy({
                 email: profile.emails[0].value
             },
             role: {
-                type: "req.body.role.type",
+                type: "jobseeker",
                 updated: false
             },  
             preferences: ['email'],    
@@ -147,5 +147,4 @@ passport.use("facebookToken", new FacebookTokenStrategy({
         console.log(error)
         done(error, false, error.message);
     }
-
-}));
+}))

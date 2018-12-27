@@ -12,7 +12,7 @@
         <h3 class="h3 mb-3 font-weight-normal">Login</h3>                 
       </div>
 
-      <form v-if="signup" class="form-signin" v-on:submit.prevent="addUser()">   
+      <form v-if="signup" class="form-signin" v-on:submit.prevent = "addUser()">   
 
         <div class="mb-2 form-label-group">
           <input type="email" class="form-control" placeholder="Email address" v-model="user.email" autofocus required>
@@ -29,10 +29,10 @@
           <label for="confirmPassword">Confirm Password</label>
         </div>
 
-        <div class="mb-2 form-label-group">
+        <!-- <div class="mb-2 form-label-group">
           <input type="text" class="form-control" placeholder="Username" name="username" id="username" v-model="user.name" required>
           <label for="name">Username</label>
-        </div> 
+        </div>  -->
    
       <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Sign up</button>
 
@@ -125,18 +125,19 @@ export default {
     }
   },
 
-  // computed: {
-  //   ...mapGetters([
-  //      "getUser"
-  //   ])
-  // },
+  computed: {
+    ...mapGetters([
+       "getUser", "getUserAuth"
+    ])
+  },
 
   methods:{    
 
     addUser(){
-      if(this.validUser()){    
+      if(this.validUser()){     
 
-          this.user.preferences[0] = 'email',
+          this.user.name = 'Generic Bridge Health User'
+          this.user.preferences[0] = 'email'
           this.user.telephone = '555-555-5555'
           this.user.role = {
             type: "jobseeker",
@@ -152,44 +153,50 @@ export default {
     loginUser(){
       if(this.returnUser()){
         this.$store.dispatch('loginUser', this.returningUser)
-        this.$router.push({path: '/admin'})
+        if(this.getUserAuth){
+          this.$router.push({path: '/admin'})
+        }else{
+          this.$router.push({path: '/role'})
+        }
+        
       }        
     },
 
     onSignInSuccess (googleUser) {
       // `googleUser` is the GoogleUser object that represents the just-signed-in user.
-      // See https://developers.google.com/identity/sign-in/web/reference#users      
-      //  if(this.getUser.updated){}else{ }
-
-          // this.userToken = googleUser.Zi.access_token // etc etc
-          // this.$store.dispatch('googleSignUp',  this.userToken ) 
-          // this.$router.push({path: '/admin'})
-       
-          this.userToken = googleUser.Zi.access_token 
-          debugger
-          this.$store.dispatch('googleSignUp',  this.userToken ) 
-          this.$router.push({path: '/role'}) 
+      // See https://developers.google.com/identity/sign-in/web/reference#users   
+         debugger
+     
+          if(this.getUserAuth){
+              this.userToken = googleUser.Zi.access_token      
+              debugger                     
+              this.$store.dispatch('googleSignUp',  this.userToken )  
+              this.$router.push({path: '/admin'})
+            }else{
+              this.userToken = googleUser.Zi.access_token        
+              debugger                
+              this.$store.dispatch('googleSignUp',  this.userToken )  
+              this.$router.push({path: '/role'})
+            }  
         
     },
 
     onFBSignInSuccess(response){
       FB.login(user => {
-        //console.log("This is the response", response.authResponse.accessToken) 
+        
           if (response.status === 'connected') {  
+            debugger
             
-            // if(this.getUser.updated){}else{  }  
-            //   this.userToken = user.authResponse.accessToken                            
-            //   this.$store.dispatch('facebookSignUp',  this.userToken )  
-            //   this.$router.push({path: '/admin'})
-            
-
-              this.userToken = user.authResponse.accessToken       
-              debugger                    
+            if(this.getUserAuth){
+              this.userToken = user.authResponse.accessToken                            
+              this.$store.dispatch('facebookSignUp',  this.userToken )  
+              this.$router.push({path: '/admin'})
+            }else{
+              this.userToken = user.authResponse.accessToken                            
               this.$store.dispatch('facebookSignUp',  this.userToken )  
               this.$router.push({path: '/role'})
-
+            }     
            
-            
           } else {
               return this.userToken=null
           } //

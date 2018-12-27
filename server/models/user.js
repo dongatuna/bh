@@ -3,18 +3,23 @@ const bcrypt = require('bcryptjs')
 
 const userSchema = mongoose.Schema({
     
-    _id: mongoose.Schema.Types.ObjectId,
+   // _id: mongoose.Schema.Types.ObjectId,
     createdAt: { type: Date, default: Date.now },
 
     role: {
-         type: {type: String, enum: ['employer','jobseeker'], default: "jobseeker" },
+         type: {
+             type: String, 
+             enum: ['employer','jobseeker'],
+             default: "jobseeker",
+             required: true
+         },
          updated: {type: Boolean, default: false},
-         //required: true
+         
     },   
 
     name:{type: String},
 
-    preferences: {type: Array /*, default: ['email']*/},
+    preferences: {type: Array , default: ['email']},
 
     signupmethod: {
         type: String,
@@ -22,7 +27,13 @@ const userSchema = mongoose.Schema({
         required: true
     },
 
-    telephone: {type: String},    
+    telephone: {
+        type: String,
+        index: {
+            unique: true,
+            dropDups: true
+        }
+    },    
     
     facebook: {
         id:{

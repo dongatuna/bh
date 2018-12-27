@@ -1,5 +1,4 @@
 import axios from "axios"
-//import jwt_decode from 'jwt-decode'
 
 //state
 const state = {
@@ -11,35 +10,43 @@ const state = {
 const getters = {
     
     isLoggedIn: state => !!state.token,
-    updatedUser: state => {
-      if(state.user !== null && state.user.role.updated){
-        state.auth = true
+      
+    isEmployer: state =>{
+      if(state.user!==null && state.auth && state.user.role.type==='employer'){
         return state.user
       }
     },
-    
-    getUser: state => state.user !== null 
 
-  }
+    isJobSeeker: state =>{
+      if(state.user!==null && state.auth && state.user.role.type==='jobseeker'){
+        return state.user
+      }
+    },
+    getUser: state => state.user,
+    getUserAuth: state => state.auth,
+
+    updatedUser: state => {
+      if(state.user !== null && state.auth){        
+        return state.user
+      }
+    }
+}
 
 //mutations
 const mutations = {
 
-    REGISTER_USER(state, payload){
-      state.token = payload.token,
-      state.user = payload.user,
-      state.auth = payload.auth
-    },
-    //Add user and token  
-    ADD_USER(state, payload){
-       state.user = payload     
-    },  
-   // Remove user and token    
-    REMOVE_USER(state){
-      //state.status = ''
-      state.user = null,
-      state.token = null
-    }   
+  REGISTER_USER(state, payload){
+    state.token = payload.token,
+    state.user = payload.user,
+    state.auth = payload.auth
+  },
+  
+  // Remove user and token    
+  REMOVE_USER(state){
+    state.auth = false
+    state.user = null,
+    state.token = null
+  }   
 }
 
 
@@ -53,12 +60,14 @@ const actions = {
                 method: 'post',
                 url: '/users/signup',
                 data: payload,
-                headers:{"Content-Type":"application/json"}
+                headers:{ "Content-Type" : "application/json" }
           })
           
-          const { newUser } = response.data    
-          debugger                    
-          context.commit('ADD_USER', newUser)       
+          const  newUser  = response.data                               
+          localStorage.setItem('access_token', newUser.token)
+          axios.defaults.headers.common['Authorization'] = newUser.token 
+          debugger 
+          context.commit('REGISTER_USER', newUser)       
         
       } catch (error) {
         alert(error)
@@ -76,10 +85,11 @@ const actions = {
               headers:{"Content-Type":"application/json"}
           })
           
-          const payload = response.data          
-          localStorage.setItem('access_token', payload.token)
-          axios.defaults.headers.common['Authorization'] = payload.token            
-          context.commit('REGISTER_USER', payload)  
+          const updatedUser = response.data.payload          
+          localStorage.setItem('access_token', updatedUser.token)
+          axios.defaults.headers.common['Authorization'] = updatedUser.token 
+          debugger           
+          context.commit('REGISTER_USER', updatedUser)  
         
       } catch (error) {
         alert(error)
@@ -99,10 +109,10 @@ const actions = {
               headers:{"Content-Type":"application/json"}
           })
           
-          const payload = response.data          
-          localStorage.setItem('access_token', payload.token)
-          axios.defaults.headers.common['Authorization'] = payload.token            
-          context.commit('ADD_USER', payload)  
+          const user = response.data.payload         
+          localStorage.setItem('access_token', user.token)
+          axios.defaults.headers.common['Authorization'] = user.token            
+          context.commit('REGISTER_USER', user)  
 
       } catch (error) {
         alert(error)
@@ -113,32 +123,33 @@ const actions = {
     async destroyToken(context){
        
       localStorage.removeItem('access_token')
-       delete axios.defaults.headers.common['Authorization']
+      delete axios.defaults.headers.common['Authorization']
        
-       context.commit('REMOVE_USER')
-        await axios({
-              method: 'get',
-              url: '/users/logout'              
-        })                   
-    },
-  
+      context.commit('REMOVE_USER')
+      await axios({
+            method: 'get',
+            url: '/users/logout'              
+      })                   
+    },  
      
     async facebookSignUp(context, payload) {
       try {
            
-           const response = await axios.post("/users/auth/facebook", {
-             access_token: payload,
-             //payload,
-             headers: { "Content-Type": "application/json" }
-           })    
+        const response = await axios.post("/users/auth/facebook", {
+          access_token: payload,
+          headers: { "Content-Type" : "application/json" }
+        })     
 
-           const payload = response.data          
-           localStorage.setItem('access_token', payload.token)
-           axios.defaults.headers.common['Authorization'] = payload.token            
-           context.commit('ADD_USER', payload)            
+           
+           const user = response.data.payload
+           debugger         
+           localStorage.setItem('access_token', user.token)
+           axios.defaults.headers.common['Authorization'] = user.token        
+           debugger    
+           context.commit('REGISTER_USER', user)            
         
       } catch (error) {
-        alert(error)
+        alert("Here is the error:", error)
         localStorage.removeItem('access_token')
       }
     },
@@ -154,10 +165,14 @@ const actions = {
           
            debugger
            
-          const payload = response.data          
-          localStorage.setItem('access_token', payload.token)
-          axios.defaults.headers.common['Authorization'] = payload.token            
-          context.commit('ADD_USER', payload)   
+          const user = response.data.payload         
+          localStorage.setItem('access_token', user.token)
+          debugger
+          //user.data.token
+          debugger
+          axios.defaults.headers.common['Authorization'] = user.token      
+          debugger      
+          context.commit('REGISTER_USER', user)   
 
       } catch (error) {
         alert(error)

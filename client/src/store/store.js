@@ -15,10 +15,3 @@ export const store = new Vuex.Store({
        event, jobpost, questions, resume, user
     }
 })
-
-// export default new Vuex.Store({
-//     plugins: [createPersistedState()],
-//     modules:{
-//         event, jobpost, questions, resume, user
-//     }
-// })

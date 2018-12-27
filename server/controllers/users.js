@@ -8,6 +8,7 @@ signToken = (user) =>{
         {
             iss: "Bridge Health",
             sub: user._id,
+            updated: user.role.updated,
             iat: new Date().getTime(), //current time
             exp: new Date().setDate(new Date().getDate()+1), //current time + 1 day ahead            
         },
@@ -36,7 +37,7 @@ module.exports = {
 
             //create new user
             const newUser = new User({
-                _id: new mongoose.Types.ObjectId(),
+                //_id: new mongoose.Types.ObjectId(),
                 name,  
                 role: {
                     type: req.body.role.type,
@@ -52,8 +53,13 @@ module.exports = {
             })            
 
             await newUser.save()
+
+            const token = signToken(newUser)
+            const data = {
+                newUser, token, auth: false
+            }            
  
-            res.status(200).json({newUser})
+            res.status(200).json({data})
             
         }catch(error){
             console.log(error)
@@ -68,16 +74,21 @@ module.exports = {
         //The signin is handled by passport.js - 
         console.log('here is the req.user', req.user)
         const user = req.user
-
+        const token = signToken(user)
         if(user.role.updated){
-            const token = signToken(req.user)
+            
             const data = {
                 user, token, auth: true
             }
             res.status(200).json({data})
+        }else{
+
+            const data = {
+                user, token, auth: false
+            }
+            res.status(200).json({data})
         }
-        
-        res.status(200).json({user})        
+               
     },
 
     logOut: async(req, res, next)=>{
@@ -101,30 +112,40 @@ module.exports = {
     facebookOAuth: async(req, res, next)=>{
         
         const user = req.user
+        const token = signToken(user)
         if(user.role.updated){
-            const token = signToken(user)
-            const data = {
+            
+            const payload = {
                 user, token, auth: true
             }
-            res.status(200).json({data})
+            res.status(200).json({payload})
+        }else{
+
+            const payload = {
+                user, token, auth: false
+            }
+            res.status(200).json({payload})
         }
-        
-        res.status(200).json({user})
 
     },
 
     googleOAuth: async(req, res, next) => {
         //Generate token
         const user = req.user
+        const token = signToken(user)
         if(user.role.updated){
-            const token = signToken(user)
-            const data = {
+            
+            const payload = {
                 user, token, auth: true
             }
-            res.status(200).json({data})
+            res.status(200).json({payload})
+        }else{
+
+            const payload = {
+                user, token, auth: false
+            }
+            res.status(200).json({payload})
         }
-        
-        res.status(200).json({user})
     },
 
     updateRole: async(req, res, next) => {
@@ -132,28 +153,30 @@ module.exports = {
 
            // console.log("Here are the results...", req.body)
             console.log("Here are the ID...", req.body._id)
-            console.log("Here is the name", req.body.name)
+            console.log("Here is the name", req.body.name, "and", req.body.preferences)
             console.log("Here is the type", req.body.role.type)
             console.log("Here is the updated", req.body.role.updated)
 
-            await User.update({_id:req.body._id}, {
-                name: req.body.name, 
-                telephone: req.body.telephone, 
-                preferences: req.body.preference, 
-                'role.type': req.body.role.type, 
-                'role.updated': req.body.role.updated
+            await User.update({_id : req.body._id}, 
+                {'$set':{
+                    name: req.body.name, 
+                    telephone: req.body.telephone, 
+                    preferences: req.body.preferences,
+                    'role.type': req.body.role.type, 
+                    'role.updated': req.body.role.updated
+                }                
             } /*{ updatedAt:  type: Date, default:  Date.now },*/)
 
             const user = await User.findById(req.body._id)          
             
             const token = signToken(user)
 
-            const data = {
+            const payload = {
                 user,
                 token,
                 auth: true
             }
-            res.status(200).json({data})
+            res.status(200).json({payload})
 
         }catch(error){
             res.status(401).json({error})
