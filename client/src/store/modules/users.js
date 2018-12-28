@@ -4,6 +4,7 @@ import axios from "axios"
 const state = {
     token: localStorage.getItem('access_token') || null,
     user: {},
+    mode: '',
     auth: false   
 }
 //getters
@@ -23,6 +24,11 @@ const getters = {
       }
     },
     getUser: state => state.user,
+    getSignUpMethod: state =>{
+      if(state.mode==='local'){
+        return true
+      }
+    },
     getUserAuth: state => state.auth,
 
     updatedUser: state => {
@@ -38,14 +44,16 @@ const mutations = {
   REGISTER_USER(state, payload){
     state.token = payload.token,
     state.user = payload.user,
-    state.auth = payload.auth
+    state.auth = payload.auth,
+    state.mode = payload.user.signupmethod
   },
   
   // Remove user and token    
   REMOVE_USER(state){
     state.auth = false
     state.user = null,
-    state.token = null
+    state.token = null,
+    state.mode = ''
   }   
 }
 
@@ -63,7 +71,7 @@ const actions = {
                 headers:{ "Content-Type" : "application/json" }
           })
           
-          const  newUser  = response.data                               
+          const  newUser  = response.data.payload                               
           localStorage.setItem('access_token', newUser.token)
           axios.defaults.headers.common['Authorization'] = newUser.token 
           debugger 

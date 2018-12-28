@@ -28,11 +28,11 @@ const userSchema = mongoose.Schema({
     },
 
     telephone: {
-        type: String,
-        index: {
-            unique: true,
-            dropDups: true
-        }
+        type: String
+        // index: {
+        //     unique: true,
+        //     dropDups: true
+        // }
     },    
     
     facebook: {

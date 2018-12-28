@@ -36,7 +36,7 @@ module.exports = {
             }
 
             //create new user
-            const newUser = new User({
+            const user = new User({
                 //_id: new mongoose.Types.ObjectId(),
                 name,  
                 role: {
@@ -52,14 +52,14 @@ module.exports = {
                 telephone   
             })            
 
-            await newUser.save()
+            await user.save()
 
-            const token = signToken(newUser)
-            const data = {
-                newUser, token, auth: false
+            const token = signToken(user)
+            const payload = {
+                user, token, auth: false
             }            
  
-            res.status(200).json({data})
+            res.status(200).json({payload})
             
         }catch(error){
             console.log(error)

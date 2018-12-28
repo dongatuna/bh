@@ -29,10 +29,14 @@
          
         <p><small><strong>Employers and organizations check "No". </strong></small></p>
         
-          <div class="form-label-group">
+          <div v-if="getSignUpMethod" class="form-label-group">
+            <input type="text" class="form-control" placeholder="Username"  name="username" id="username" v-model="user.name" required>
+            <label for="name">Enter preferred name</label>
+          </div> 
+          <div v-else class="form-label-group">
             <input type="text" class="form-control" placeholder="Username" v-on:change = "nameChange()" name="username" id="username" v-model="getUser.name" required>
             <label for="name">Enter preferred name</label>
-          </div>   
+          </div>
           
           <div class="form-label-group">
             <input type="text" class="form-control" placeholder="Enter Phone Number" name="telephone" id="telephone" v-model="user.telephone" required>
@@ -83,7 +87,7 @@ export default {
   name: 'userRole', 
 
   computed:{
-    ...mapGetters([ "getUser" ])  
+    ...mapGetters([ "getUser", "getSignUpMethod" ])  
   },
 
   data(){
@@ -135,7 +139,7 @@ export default {
     validUser(){     
 
       if(this.user.role==""){
-        this.signUpErrors['role'] = 'Please select your role'
+        this.signUpErrors['role'] = 'Please select whether you are looking for a job or employees'
       } 
 
       if(this.user.preferences.length===0){
@@ -143,7 +147,7 @@ export default {
       }
 
       if(!this.validateTel(this.user.telephone)){
-        this.signUpErrors['tel'] = 'Please enter your phone number n the correct format'
+        this.signUpErrors['tel'] = 'Please enter your phone number in the correct format'
       }
 
       if(this.signUpErrors.length>0){
