@@ -31,8 +31,7 @@ export default [
     {
       path: '/events', 
       name: 'listEvents', 
-      component: ListEvents
-       
+      component: ListEvents       
     },
     {
       path: '/events/:id', 

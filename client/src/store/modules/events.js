@@ -29,20 +29,21 @@ const mutations = {
     state.events.splice(state.events.indexOf(payload), 1)
   },
 
-  CLEAR_STATE:(state, payload)=>state.events=payload
+  CLEAR_STATE:(state)=>state.events=[]
 };
 
 const actions = {
+  
   async getDBEvents(context, payload) {
     try {
       //debugger
       //clear the state before adding the events
-       const blankState = []
-       context.commit('CLEAR_STATE', blankState)
+       
+       context.commit('CLEAR_STATE')
       
-      const response = await axios.get("/events");
+      const response = await axios.get("/events")
       
-      context.commit("EVENTS", response.data.communityEvents);
+      context.commit("EVENTS", response.data.commEvents)
 
     } catch (error) {
        error
@@ -71,6 +72,8 @@ const actions = {
     }
   },
 
+
+
   async getDBEventById(context, payload){
     try{
       
@@ -85,12 +88,19 @@ const actions = {
 
   async deleteDBEvent(context, payload) {
     try {
-      const response = await axios.delete(`/events/${payload}`)
+      //const response = await axios.delete(`/events/${payload}`)
 
-      
-      //context.commit("DELETE_EVENT", response.data);
+      debugger
+      const response = await axios( {
+        method: "delete",
+        url: `/events/${payload[1]}`,
+        headers: {'Authorization' :  payload[0]} 
+       })
+
+      debugger
+      context.commit("DELETE_EVENT", response.data)
     } catch (error) {
-      alert(error);
+      alert("Here is the stupid error...", error)
     }
   },
 

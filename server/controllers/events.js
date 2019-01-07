@@ -10,7 +10,8 @@ module.exports = {
             const {userId, topic, description, location, audience, date, time, cost} = req.body
             
             const eventfiles = []
-            req.files.forEach(eventFile=>{
+            req.files.forEach(eventFile => {
+                console.log("This is the event file...", eventFile)
                 eventfiles.push(eventFile.path)
             })
             
@@ -96,7 +97,7 @@ module.exports = {
 
             res.status(200).json({
                 count: commEvents.length,
-                communityEvents
+                commEvents
             })
           
 
@@ -137,19 +138,25 @@ module.exports = {
     deleteEvent: async(req, res, next)=>{
         
         try{
-            const id = req.params.id;
-            const result = await communityEvent.remove({_id: id});
+            const id = req.params.id
 
-            if(result.ok){
-                res.status(200).json({
-                    message: "The event has been removed",
-                    request:{
-                        message: "Use the url link below to create a new event",
-                        type: "POST",
-                        link: "http://localhost:3000/events"
-                    }
-                })
-            }
+            const event = await communityEvent.findById(id)
+
+            if(req.user._id.equals(event.userId)){
+
+                const result = await communityEvent.remove({_id: id})
+
+                if(result.ok){
+                    res.status(200).json({
+                        message: "The event has been removed",
+                        request:{
+                            message: "Use the url link below to create a new event",
+                            type: "POST",
+                            link: "http://localhost:3000/events"
+                        }
+                    })
+                }
+            }            
 
         }catch(error){
             res.status(500).json({

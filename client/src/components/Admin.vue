@@ -1,12 +1,19 @@
 <template>
-
     <section class="py-5 mt-5 bg-light">
         <div class="container-fluid">
             <div class="row justify-content-center">
 
-                <div class=" p-3 col-md-2">
+                <div v-if="isEmployer" class=" p-3 col-md-2">
                     <ul class="list-group">
                         <li class="list-group-item">Find Candidates</li>
+                        <li class="list-group-item">Postings</li>              
+                        <li class="list-group-item">Events</li>
+                        <li class="list-group-item">Settings</li>                    
+                    </ul> 
+                </div>
+
+                <div v-else class=" p-3 col-md-2">
+                    <ul class="list-group">
                         <li class="list-group-item">Find Jobs</li>
                         <li class="list-group-item">Postings</li>              
                         <li class="list-group-item">View/Update Resume</li>           
@@ -18,18 +25,23 @@
                 
                 <!--CANDIDATES should have create/edit resume, Jobs, HCA/NAC Exams, Events Near You, Settings-->
                 <div class="p-3 col-md-6 col-sm-10">
-                    <div class="row justify-content-between m-3">
+                    <div v-if="isEmployer[0]" class="row justify-content-between m-3">
                         <h4 class="mb-3 display 4" >Events </h4> 
                         <button class="btn btn-primary" type="submit" v-on:click="createEvent"><strong>Create Event</strong> </button>
                     </div>
+
+                    <div v-else class="row justify-content-between m-3">
+                        <h4 class="mb-3 display 4" >Events </h4> 
+                        <button class="btn btn-primary" type="submit" v-on:click="createEvent"><strong>Create Resume</strong> </button>
+                    </div>
                     
                     <div v-if="getEvents.length>0">
-                        <ul class="list-group"  v-for="event of getEvents" v-bind:key="event.communityEvent._id">                        
-                            <li class="list-group-item d-flex justify-content-between align-items-center"><router-link :to="'/events/'+event._id">{{event.communityEvent.topic}}</router-link><span>
+                        <ul class="list-group"  v-for="event of getEvents" v-bind:key="event._id">                        
+                            <li class="list-group-item d-flex justify-content-between align-items-center"><router-link :to="'/events/'+event._id">{{event.topic}}</router-link><span>
                                 <a href="#">Applicants</a> |
                                 <a href="#"> Repost </a>|
                                 <a href="#"> Edit </a>|
-                                <a href="#" v-on:click="deleteEvent(event.communityEvent._id)"> Delete</a></span>
+                                <a href="#" v-on:click="deleteEvent(event._id)"> Delete</a></span>
                             </li>                    
                         </ul>
                     </div>
@@ -60,21 +72,13 @@ export default {
     //         id: this.$router.params.id
     //     }
     // },
-    beforeRouteEnter(to, from, next){
-
-        if(localStorage.access_token===null){
-
-            debugger
-            next(false)
-        }else{
-            next()
-        }
-    },
+   
 
     computed:{
         ...mapGetters([
             "getEvents",
-            "getUser"
+            "getEvent",
+            "isEmployer"
         ])
     },
 
@@ -84,7 +88,14 @@ export default {
 
     methods:{
         deleteEvent(param){
-            this.$store.dispatch('deleteDBEvent', param)
+            debugger
+
+            if(this.isEmployer[0]._id===this.getEvent.userId){
+
+                const payload = [this.isEmployer[1], param]
+                debugger
+                this.$store.dispatch('deleteDBEvent', payload)
+            }            
         },
 
         createEvent(){

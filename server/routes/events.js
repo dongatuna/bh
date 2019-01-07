@@ -6,7 +6,7 @@ const passport = require('passport')
 const passportConf = require('../passport')
 const passportJWT = passport.authenticate('jwt', { session: false })
 
-//const checkAuth = require('../middleware/check-auth');
+//const checkAuth = require('../middleware/check-auth')
 const multer = require('multer');
 
 const storage = multer.diskStorage({

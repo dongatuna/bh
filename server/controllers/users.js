@@ -75,18 +75,17 @@ module.exports = {
         console.log('here is the req.user', req.user)
         const user = req.user
         const token = signToken(user)
-        if(user.role.updated){
-            
-            const data = {
+        if(user.role.updated){            
+            const payload = {
                 user, token, auth: true
             }
-            res.status(200).json({data})
+            res.status(200).json({payload})
         }else{
 
-            const data = {
+            const payload = {
                 user, token, auth: false
             }
-            res.status(200).json({data})
+            res.status(200).json({payload})
         }
                
     },

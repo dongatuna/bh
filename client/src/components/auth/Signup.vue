@@ -85,7 +85,7 @@
 <script>
 //https://developers.facebook.com/docs/javascript/advanced-setup
 import  {store}  from "../../store/store"
-import {mapGetters} from 'vuex'
+import {mapGetters, mapState} from 'vuex'
 import config from '../../configuration/index.js'
 
 export default {
@@ -128,6 +128,9 @@ export default {
   computed: {
     ...mapGetters([
        "getUser", "getUserAuth"
+    ]),
+    ...mapState([
+      "fBAuthStatus"
     ])
   },
 
@@ -150,58 +153,86 @@ export default {
       }      
     },
 
-    loginUser(){
-      if(this.returnUser()){
-        this.$store.dispatch('loginUser', this.returningUser)
-        if(this.getUserAuth){
-          this.$router.push({path: '/admin'})
-        }else{
-          this.$router.push({path: '/role'})
-        }
-        
-      }        
+    getAuthStatus(actionName, user){      
+        debugger
+        return this.$store.dispatch(actionName, user)       
+             
     },
 
-    onSignInSuccess (googleUser) {
+    async loginUser(){
+      try{
+
+        if(this.returnUser()){ 
+          await this.getAuthStatus('loginUser', this.returningUser)
+          debugger
+          if(this.getUserAuth){
+            this.$router.push({path: "/admin"})
+          }else{
+            this.$router.push({path: "/role"})
+          }
+          debugger
+        }         
+
+      }catch(error){
+
+      }
+    },
+
+
+    async onSignInSuccess (googleUser) {
       // `googleUser` is the GoogleUser object that represents the just-signed-in user.
       // See https://developers.google.com/identity/sign-in/web/reference#users   
          debugger
-     
-          if(this.getUserAuth){
-              this.userToken = googleUser.Zi.access_token      
-              debugger                     
-              this.$store.dispatch('googleSignUp',  this.userToken )  
+
+         try{
+           await this.$store.dispatch('googleSignUp',  googleUser.Zi.access_token )
+
+           debugger  
+           if(this.getUserAuth){                                
+              //this.$store.dispatch  
               this.$router.push({path: '/admin'})
             }else{
-              this.userToken = googleUser.Zi.access_token        
-              debugger                
-              this.$store.dispatch('googleSignUp',  this.userToken )  
               this.$router.push({path: '/role'})
-            }  
-        
+            }
+
+         }catch(error){
+
+         }    
     },
 
-    onFBSignInSuccess(response){
-      FB.login(user => {
-        
-          if (response.status === 'connected') {  
-            debugger
-            
-            if(this.getUserAuth){
-              this.userToken = user.authResponse.accessToken                            
-              this.$store.dispatch('facebookSignUp',  this.userToken )  
-              this.$router.push({path: '/admin'})
-            }else{
-              this.userToken = user.authResponse.accessToken                            
-              this.$store.dispatch('facebookSignUp',  this.userToken )  
-              this.$router.push({path: '/role'})
-            }     
-           
-          } else {
-              return this.userToken=null
-          } //
+    async fBUserStatus(fbRoute, payload){
+      try{
+        await this.$store.dispatch(fbRoute,  payload)
+      }catch(error){
+        alert("There has been an error with the fBUserStatus method")
+      }      
+    },
 
+    async onFBSignInSuccess(response){
+     // try{
+        debugger
+        FB.login(user => {
+          
+          debugger
+          if (response.status === 'connected') {             
+            
+            debugger
+            this.fBUserStatus('facebookSignUp',  user.authResponse.accessToken) 
+            .then((/*user*/)=>{
+              debugger
+              if(this.getUserAuth){
+                this.$router.push({path: '/admin'})
+              }else{
+                this.$router.push({path: '/role'})
+              }
+            })
+            .catch(error => {
+                alert("Here is the error")
+              })
+            } 
+              
       }) 
+     
     }, 
 
     onSignInError (error) {
@@ -241,7 +272,8 @@ export default {
         return false
       }else return true
     } 
-  }    
+  }
+
 }
 </script>
 

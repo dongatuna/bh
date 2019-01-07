@@ -5,31 +5,39 @@ const state = {
     token: localStorage.getItem('access_token') || null,
     user: {},
     mode: '',
-    auth: false   
+    auth: false,
+      
 }
 //getters
 const getters = {
     
     isLoggedIn: state => !!state.token,
-      
+
     isEmployer: state =>{
       if(state.user!==null && state.auth && state.user.role.type==='employer'){
-        return state.user
-      }
+        return [state.user, state.token]
+      }else return false
     },
 
     isJobSeeker: state =>{
       if(state.user!==null && state.auth && state.user.role.type==='jobseeker'){
         return state.user
-      }
+      }else return false
     },
+
     getUser: state => state.user,
+
     getSignUpMethod: state =>{
       if(state.mode==='local'){
         return true
       }
     },
-    getUserAuth: state => state.auth,
+
+    getUserAuth: state => {
+      if(state.token!==null){
+        return state.auth
+      }
+    } ,
 
     updatedUser: state => {
       if(state.user !== null && state.auth){        
@@ -68,7 +76,9 @@ const actions = {
                 method: 'post',
                 url: '/users/signup',
                 data: payload,
-                headers:{ "Content-Type" : "application/json" }
+                headers:{ 
+                  "Content-Type" : "application/json" 
+                }
           })
           
           const  newUser  = response.data.payload                               
@@ -117,9 +127,13 @@ const actions = {
               headers:{"Content-Type":"application/json"}
           })
           
-          const user = response.data.payload         
+          debugger
+
+          const user = response.data.payload
           localStorage.setItem('access_token', user.token)
-          axios.defaults.headers.common['Authorization'] = user.token            
+          axios.defaults.headers.common['Authorization'] = user.token    
+
+          debugger
           context.commit('REGISTER_USER', user)  
 
       } catch (error) {
@@ -146,15 +160,15 @@ const actions = {
         const response = await axios.post("/users/auth/facebook", {
           access_token: payload,
           headers: { "Content-Type" : "application/json" }
-        })     
+        })   
 
-           
-           const user = response.data.payload
-           debugger         
-           localStorage.setItem('access_token', user.token)
-           axios.defaults.headers.common['Authorization'] = user.token        
-           debugger    
-           context.commit('REGISTER_USER', user)            
+        const user = response.data.payload
+        debugger         
+        localStorage.setItem('access_token', user.token)
+        axios.defaults.headers.common['Authorization'] = user.token        
+        debugger    
+        context.commit('REGISTER_USER', user) 
+       // return user           
         
       } catch (error) {
         alert("Here is the error:", error)

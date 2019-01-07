@@ -5,12 +5,18 @@ export default  [
     {
         path: '/signup', 
         name: 'signup', props:{signup: true},
-        component: Signup
+        component: Signup,
+        // meta: {
+        //     requireAuth: false
+        // }
     },
     {
         path: '/login', 
         name:'login', props:{signup: false},
-        component: Signup
+        component: Signup,
+        // meta: {
+        //     requireAuth: false
+        // }
     }, 
     {
         path: '/role', 
